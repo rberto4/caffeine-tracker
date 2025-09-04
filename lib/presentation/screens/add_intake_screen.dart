@@ -6,6 +6,7 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import '../../domain/providers/caffeine_provider.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_constants.dart';
+import '../widgets/visual_product_selector.dart';
 
 /// Screen for adding new caffeine intake
 class AddIntakeScreen extends StatefulWidget {
@@ -119,69 +120,29 @@ class _AddIntakeScreenState extends State<AddIntakeScreen> {
   }
 
   Widget _buildProductSelection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Product',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          initialValue: _selectedProduct,
-          decoration: InputDecoration(
-            hintText: 'Select a product',
-            prefixIcon: const Icon(LucideIcons.coffee, color: AppColors.primaryOrange),
-          ),
-          items: CaffeineProducts.productNames.map((product) {
-            return DropdownMenuItem(
-              value: product,
-              child: Text(product),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedProduct = value;
-              _productController.text = value ?? '';
-              if (value != null) {
-                final caffeine = CaffeineProducts.getCaffeineContent(value);
-                _caffeineController.text = caffeine.toString();
-              }
-            });
-          },
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please select a product';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Or enter custom product name',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppColors.grey500,
-          ),
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: _productController,
-          decoration: InputDecoration(
-            hintText: 'Custom product name',
-            prefixIcon: const Icon(LucideIcons.edit3, color: AppColors.primaryOrange),
-          ),
-          onChanged: (value) {
-            if (value.isNotEmpty) {
-              setState(() {
-                _selectedProduct = null;
-              });
-            }
-          },
-        ),
-      ],
+    return VisualProductSelector(
+      selectedProduct: _selectedProduct,
+      customProductName: _productController.text,
+      onProductChanged: (product) {
+        setState(() {
+          _selectedProduct = product;
+          if (product != null) {
+            _productController.text = product;
+            final caffeine = CaffeineProducts.getCaffeineContent(product);
+            _caffeineController.text = caffeine.toString();
+          }
+        });
+      },
+      onCustomProductChanged: (customName) {
+        setState(() {
+          _productController.text = customName;
+          if (customName.isNotEmpty) {
+            _selectedProduct = null;
+            // Try to guess caffeine content or leave it empty for manual input
+            _caffeineController.text = '';
+          }
+        });
+      },
     );
   }
 

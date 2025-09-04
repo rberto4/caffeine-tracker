@@ -19,65 +19,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildProfileHeader(),
-            const SizedBox(height: 24),
-            _buildProfileCard(),
-            const SizedBox(height: 16),
-            _buildStatsCard(),
-            const SizedBox(height: 100), // Bottom padding
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildProfileHeader(),
+              const SizedBox(height: 24),
+              _buildProfileCard(),
+              const SizedBox(height: 16),
+              _buildStatsCard(),
+              const SizedBox(height: 100), // Bottom padding
+            ],
+          ),
         ),
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      title: const Text('Profilo'),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      centerTitle: true,
-      actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const SettingsScreen(),
-              ),
-            );
-          },
-          icon: const Icon(LucideIcons.settings),
-          tooltip: 'Impostazioni',
-        ),
-      ],
-    );
-  }
-
   Widget _buildProfileHeader() {
     final textTheme = Theme.of(context).textTheme;
-    
+
     return Consumer<UserProvider>(
       builder: (context, userProvider, child) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                color: AppColors.primaryOrange.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                LucideIcons.user,
-                color: AppColors.primaryOrange,
-                size: 40,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryOrange.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    LucideIcons.user,
+                    color: AppColors.primaryOrange,
+                    size: 40,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                    );
+                  },
+                  icon: const Icon(LucideIcons.settings),
+                  tooltip: 'Impostazioni',
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Text(
@@ -90,9 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 8),
             Text(
               'Visualizza le tue informazioni e statistiche',
-              style: textTheme.bodyMedium?.copyWith(
-                color: AppColors.grey600,
-              ),
+              style: textTheme.bodyMedium?.copyWith(color: AppColors.grey600),
             ),
           ],
         );
@@ -108,16 +99,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
 
         final profile = userProvider.userProfile!;
-        
+
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 5,
                 offset: const Offset(0, 2),
               ),
             ],
@@ -143,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              
+
               // Profile Info Rows
               _buildInfoRow(
                 'Sesso',
@@ -157,11 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 LucideIcons.scale,
               ),
               const SizedBox(height: 16),
-              _buildInfoRow(
-                'Età',
-                '${profile.age} anni',
-                LucideIcons.calendar,
-              ),
+              _buildInfoRow('Età', '${profile.age} anni', LucideIcons.calendar),
               const SizedBox(height: 16),
               _buildInfoRow(
                 'Limite Giornaliero',
@@ -178,25 +165,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildInfoRow(String label, String value, IconData icon) {
     return Row(
       children: [
-        Icon(
-          icon,
-          color: AppColors.grey600,
-          size: 18,
-        ),
+        Icon(icon, color: AppColors.grey600, size: 18),
         const SizedBox(width: 12),
         Expanded(
           child: Text(
             label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.grey600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.grey600),
           ),
         ),
         Text(
           value,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
       ],
     );
@@ -206,24 +189,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Consumer<CaffeineProvider>(
       builder: (context, caffeineProvider, child) {
         final stats = caffeineProvider.getStatistics();
-        
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
                 children: [
                   Icon(
                     LucideIcons.barChart3,
@@ -240,76 +212,96 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatItem(
-                      'Assunzioni Totali',
-                      '${stats['totalIntakes']}',
-                      LucideIcons.hash,
-                    ),
-                  ),
-                  Expanded(
-                    child: _buildStatItem(
-                      'Media Giornaliera',
-                      '${(stats['averageDaily'] as double).toInt()}mg',
-                      LucideIcons.trendingUp,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatItem(
-                      'Picco Giornaliero',
-                      '${(stats['maxDaily'] as double).toInt()}mg',
-                      LucideIcons.zap,
-                    ),
-                  ),
-                  Expanded(
-                    child: _buildStatItem(
-                      'Giorni Tracciati',
-                      '${stats['daysTracked']}',
-                      LucideIcons.calendar,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              childAspectRatio: 1,
+              children: [
+                _buildStatCard(
+                  'Assunzioni Totali',
+                  '${stats['totalIntakes']}',
+                  LucideIcons.hash,
+                  AppColors.info,
+                ),
+                _buildStatCard(
+                  'Media Giornaliera',
+                  '${(stats['averageDaily'] as double).toInt()}mg',
+                  LucideIcons.trendingUp,
+                  AppColors.success,
+                ),
+                _buildStatCard(
+                  'Picco Giornaliero',
+                  '${(stats['maxDaily'] as double).toInt()}mg',
+                  LucideIcons.zap,
+                  AppColors.warning,
+                ),
+                _buildStatCard(
+                  'Giorni Tracciati',
+                  '${stats['daysTracked']}',
+                  LucideIcons.calendar,
+                  AppColors.primaryOrange,
+                ),
+              ],
+            ),
+          ],
         );
       },
     );
   }
 
-  Widget _buildStatItem(String label, String value, IconData icon) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          color: AppColors.primaryOrange,
-          size: 24,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.primaryOrange,
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
-        ),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppColors.grey600,
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color, size: 24),
           ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: textTheme.bodySmall?.copyWith(color: AppColors.grey600),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }

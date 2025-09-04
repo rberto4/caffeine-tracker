@@ -9,8 +9,9 @@ class AppTheme {
   /// Light theme configuration
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    brightness: Brightness.light,
     colorScheme: const ColorScheme.light(
+      surfaceContainer: AppColors.surfaceContainerLight,
+      brightness: Brightness.light,
       primary: AppColors.primaryOrange,
       onPrimary: AppColors.white,
       secondary: AppColors.primaryOrangeLight,
@@ -40,19 +41,15 @@ class AppTheme {
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       ),
     ),
     cardTheme: CardThemeData(
-      color: AppColors.surfaceLight,
+      color: AppColors.backgroundLight,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -65,18 +62,16 @@ class AppTheme {
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: AppColors.primaryOrange, width: 2),
       ),
-      labelStyle: GoogleFonts.outfit(
-        color: AppColors.grey600,
-        fontSize: 16,
-      ),
+      labelStyle: GoogleFonts.outfit(color: AppColors.grey600, fontSize: 16),
     ),
   );
 
   /// Dark theme configuration
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    brightness: Brightness.dark,
     colorScheme: const ColorScheme.dark(
+      surfaceContainer: AppColors.surfaceContainerDark,
+      brightness: Brightness.dark,
       primary: AppColors.primaryOrange,
       onPrimary: AppColors.white,
       secondary: AppColors.primaryOrangeLight,
@@ -106,19 +101,15 @@ class AppTheme {
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       ),
     ),
     cardTheme: CardThemeData(
-      color: AppColors.surfaceDark,
+      color: AppColors.backgroundDark,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -131,10 +122,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: AppColors.primaryOrange, width: 2),
       ),
-      labelStyle: GoogleFonts.outfit(
-        color: AppColors.grey400,
-        fontSize: 16,
-      ),
+      labelStyle: GoogleFonts.outfit(color: AppColors.grey400, fontSize: 16),
     ),
   );
 

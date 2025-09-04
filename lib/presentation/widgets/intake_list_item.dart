@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../domain/models/caffeine_intake.dart';
 import '../../utils/app_colors.dart';
+import 'drink_icon.dart';
 
 /// List item widget for displaying caffeine intake entries
 class IntakeListItem extends StatelessWidget {
@@ -22,7 +23,7 @@ class IntakeListItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -46,17 +47,11 @@ class IntakeListItem extends StatelessWidget {
   }
 
   Widget _buildIcon() {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: AppColors.primaryOrange.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Icon(
-        _getProductIcon(),
-        color: AppColors.primaryOrange,
-        size: 20,
-      ),
+    return DrinkIcon(
+      productName: intake.productName,
+      size: 40,
+      showBackground: true,
+      backgroundColor: AppColors.primaryOrange.withOpacity(0.1),
     );
   }
 
@@ -172,40 +167,5 @@ class IntakeListItem extends StatelessWidget {
         ],
       ],
     );
-  }
-
-  IconData _getProductIcon() {
-    final productName = intake.productName.toLowerCase();
-    
-    if (productName.contains('coffee') || 
-        productName.contains('espresso') ||
-        productName.contains('cappuccino') ||
-        productName.contains('latte') ||
-        productName.contains('americano') ||
-        productName.contains('mocha')) {
-      return LucideIcons.coffee;
-    }
-    
-    if (productName.contains('tea')) {
-      return LucideIcons.leaf;
-    }
-    
-    if (productName.contains('energy') ||
-        productName.contains('red bull') ||
-        productName.contains('monster')) {
-      return LucideIcons.zap;
-    }
-    
-    if (productName.contains('cola') ||
-        productName.contains('pepsi') ||
-        productName.contains('coke')) {
-      return LucideIcons.droplet;
-    }
-    
-    if (productName.contains('chocolate')) {
-      return LucideIcons.cookie;
-    }
-    
-    return LucideIcons.coffee; // Default icon
   }
 }

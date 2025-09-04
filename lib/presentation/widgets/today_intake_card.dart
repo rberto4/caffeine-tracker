@@ -3,6 +3,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../domain/providers/caffeine_provider.dart';
 import '../../utils/app_colors.dart';
+import 'modern_intake_list_item.dart';
 
 /// Card widget displaying today's caffeine intake summary
 class TodayIntakeCard extends StatelessWidget {
@@ -17,29 +18,19 @@ class TodayIntakeCard extends StatelessWidget {
         final todayIntakes = caffeineProvider.todayIntakes;
         final totalCaffeine = caffeineProvider.todayTotalCaffeine;
         
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Row(
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryOrange.withOpacity(0.1),
+                      color: AppColors.primaryOrange.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
@@ -58,15 +49,18 @@ class TodayIntakeCard extends StatelessWidget {
                   ),
                 ],
               ),
-              
-              const SizedBox(height: 16),
-              
-              if (todayIntakes.isEmpty) 
-                _buildEmptyState(textTheme)
-              else
-                _buildIntakesList(todayIntakes, totalCaffeine, textTheme, context),
-            ],
-          ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            if (todayIntakes.isEmpty) 
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: _buildEmptyState(textTheme),
+              )
+            else
+              _buildIntakesList(todayIntakes, totalCaffeine, textTheme, context),
+          ],
         );
       },
     );
@@ -74,7 +68,10 @@ class TodayIntakeCard extends StatelessWidget {
 
   Widget _buildEmptyState(TextTheme textTheme) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        const SizedBox(height: 16),
         Icon(
           LucideIcons.coffee,
           size: 48,
@@ -95,6 +92,7 @@ class TodayIntakeCard extends StatelessWidget {
             color: AppColors.grey400,
           ),
         ),
+                const SizedBox(height: 16),
       ],
     );
   }
@@ -109,28 +107,82 @@ class TodayIntakeCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Summary
-        _buildSummaryRow(intakes.length, totalCaffeine, textTheme),
+        _buildSummaryRow(intakes.length, totalCaffeine, textTheme, context),
         
         const SizedBox(height: 16),
         
         // Recent intakes (max 3)
-        ...intakes.take(3).map((intake) => _buildIntakeItem(intake, textTheme)),
+        Column(
+          children: [
+            ...intakes.take(3).map((intake) => ModernIntakeListItem(
+              intake: intake,
+              showDeleteButton: true,
+              showFullDate: false,
+              onDelete: () => _deleteIntake(context, intake.id),
+            )),
+          ],
+        ),
         
         if (intakes.length > 3) ...[
           const SizedBox(height: 8),
-          Text(
-            '+${intakes.length - 3} more items',
-            style: textTheme.bodySmall?.copyWith(
-              color: AppColors.grey500,
-              fontStyle: FontStyle.italic,
+          Center(
+            child: Text(
+              '+${intakes.length - 3} more items',
+              style: textTheme.bodySmall?.copyWith(
+                color: AppColors.grey500,
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ),
+        ] else ...[
+          const SizedBox(height: 20),
         ],
       ],
     );
   }
 
-  Widget _buildSummaryRow(int count, double totalCaffeine, TextTheme textTheme) {
+  /// Elimina un intake dalla lista
+  Future<void> _deleteIntake(BuildContext context, String intakeId) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Elimina Assunzione'),
+        content: const Text(
+          'Sei sicuro di voler eliminare questa assunzione di caffeina?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Annulla'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Elimina'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final caffeineProvider = Provider.of<CaffeineProvider>(
+        context,
+        listen: false,
+      );
+      await caffeineProvider.removeIntake(intakeId);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Assunzione eliminata con successo'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    }
+  }
+
+  Widget _buildSummaryRow(int count, double totalCaffeine, TextTheme textTheme, BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -140,8 +192,8 @@ class TodayIntakeCard extends StatelessWidget {
             Text(
               '$count ${count == 1 ? 'Item' : 'Items'}',
               style: textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: AppColors.grey700,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             Text(
@@ -171,48 +223,6 @@ class TodayIntakeCard extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildIntakeItem(dynamic intake, TextTheme textTheme) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.grey100.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  intake.productName,
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.grey800,
-                  ),
-                ),
-                Text(
-                  intake.formattedTime,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.grey600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            '${intake.caffeineAmount.toInt()}mg',
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.primaryOrange,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

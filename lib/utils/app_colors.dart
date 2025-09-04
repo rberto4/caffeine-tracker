@@ -31,12 +31,14 @@ class AppColors {
   // Background colors for light theme
   static const Color backgroundLight = white;
   static const Color surfaceLight = white;
+  static const Color surfaceContainerLight = white;
   static const Color onBackgroundLight = grey900;
   static const Color onSurfaceLight = grey900;
 
   // Background colors for dark theme
-  static const Color backgroundDark = Color(0xFF121212);
-  static const Color surfaceDark = Color(0xFF1E1E1E);
+  static const Color backgroundDark = Color.fromARGB(255, 0, 0, 0);
+  static const Color surfaceDark = Color.fromARGB(255, 35, 35, 35);
+  static const Color surfaceContainerDark = Color.fromARGB(255, 58, 58, 58);
   static const Color onBackgroundDark = white;
   static const Color onSurfaceDark = white;
 
