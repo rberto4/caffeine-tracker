@@ -115,7 +115,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   // History list
                   _showCalendar
                       ? _buildSelectedDateHistory(selectedDayIntakes)
-                      : _buildAllHistory(intakeProvider.intakes),
+                      : _buildAllHistory(intakeProvider.intakes()),
                 ],
               ),
             ),

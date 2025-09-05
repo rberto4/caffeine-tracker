@@ -95,8 +95,8 @@ class _AppInitializerState extends State<AppInitializer> {
       
       if (mounted) {
         setState(() {
-          _isFirstTime = userProvider.isFirstTime;
-          _isLoading = false;
+          _isFirstTime = userProvider.isFirstTime; 
+         _isLoading = false;
         });
       }
     } catch (e) {
@@ -118,6 +118,6 @@ class _AppInitializerState extends State<AppInitializer> {
       );
     }
 
-    return _isFirstTime ? const OnboardingScreen() : const MainScreen();
+    return _isFirstTime ?  const OnboardingScreen() : const MainScreen();
   }
 }

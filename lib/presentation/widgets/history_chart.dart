@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../utils/app_colors.dart';
 
 /// Chart widget for displaying caffeine intake history
 class HistoryChart extends StatelessWidget {

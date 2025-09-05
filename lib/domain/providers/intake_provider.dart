@@ -1,3 +1,4 @@
+import 'package:caffeine_tracker/utils/dummy_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/intake.dart';
@@ -26,7 +27,9 @@ class IntakeProvider extends ChangeNotifier {
   List<Intake> _intakes = [];
   bool _isLoading = false;
 
-  List<Intake> get intakes => _intakes;
+  List<Intake> intakes (){
+    return [..._intakes];
+  }
   bool get isLoading => _isLoading;
 
   /// Get today's intakes
@@ -64,7 +67,6 @@ class IntakeProvider extends ChangeNotifier {
   /// Load all intakes from storage
   Future<void> _loadIntakes() async {
     if (_box == null) return;
-
     _intakes = _box!.values.toList()
       ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
     notifyListeners();
