@@ -1,4 +1,3 @@
-import 'package:caffeine_tracker/utils/dummy_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/intake.dart';

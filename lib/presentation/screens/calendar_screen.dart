@@ -56,7 +56,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             _showCalendar
                                 ? LucideIcons.calendarDays
                                 : LucideIcons.calendar,
-                            color: AppColors.primaryOrange,
+                          color: Theme.of(context).colorScheme.primary,
                           ),
                           tooltip: _showCalendar
                               ? 'Nascondi Calendario'
@@ -89,12 +89,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       leading: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.primaryOrange.withValues(alpha: 0.1),
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           LucideIcons.calendar,
-                          color: AppColors.primaryOrange,
+                          color: Theme.of(context).colorScheme.primary,
                           size: 20,
                         ),
                       ),
@@ -105,12 +105,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         ),
                       ),
                       subtitle: Text(
-                        '${selectedDayIntakes.length} ${selectedDayIntakes.length == 1 ? 'assunzione' : 'assunzioni'} - ${intakeProvider.getTotalForDate(_selectedDate).toStringAsFixed(0)} mg',
+                        '${selectedDayIntakes.length} ${selectedDayIntakes.length == 1 ? 'assunzione' : 'assunzioni'}',
                         style: Theme.of(
                           context,
                         ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
                       ),
+
+                      trailing: Text(
+                        '${intakeProvider.getTotalForDate(_selectedDate).toStringAsFixed(0)}mg',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 24,
+                        ),
+                        ),
                     ),
+                  
+
             
                   // History list
                   _showCalendar

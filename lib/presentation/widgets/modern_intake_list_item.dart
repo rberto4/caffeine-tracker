@@ -17,13 +17,20 @@ class ModernIntakeListItem extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            blurStyle: BlurStyle.solid,
-            color: intake.beverage.color.withAlpha(1),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
+            color: intake.beverage.color.withAlpha(20),
+            blurRadius: 10,
+            offset: const Offset(0, 8),
           ),
         ],
-        color: intake.beverage.color.withAlpha(20),
+         gradient: LinearGradient(
+          colors: [
+            intake.beverage.color.withValues(alpha: 0.3),
+            intake.beverage.color.withValues(alpha: 0.2),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        //color: intake.beverage.color.withAlpha(20),
         borderRadius: BorderRadius.circular(12),
       ),
 

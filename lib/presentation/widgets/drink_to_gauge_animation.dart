@@ -1,23 +1,20 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../../domain/models/beverage.dart';
 
 /// Widget che gestisce l'animazione del volo dell'icona dalla quick add al gauge
 class DrinkToGaugeAnimation extends StatefulWidget {
-  final String productName;
-  final double caffeineAmount;
+  final Beverage beverage;
   final Offset startPosition;
   final Offset endPosition;
   final VoidCallback onComplete;
-  final Color drinkColor;
 
   const DrinkToGaugeAnimation({
     super.key,
-    required this.productName,
-    required this.caffeineAmount,
+    required this.beverage,
     required this.startPosition,
     required this.endPosition,
     required this.onComplete,
-    required this.drinkColor,
   });
 
   @override
@@ -55,24 +52,23 @@ class _DrinkToGaugeAnimationState extends State<DrinkToGaugeAnimation>
   }
 
   void _setupAnimations() {
-    // Curva del volo parabolico con effetto di gravità
+    // Determina il colore del drink basato sul tipo
+    final buttonCenter = Offset(
+      widget.startPosition.dx + (widget.endPosition.dx - widget.startPosition.dx) * 0.7,
+      widget.startPosition.dy - 50, // Arco verso l'alto
+    );
+
     _flyAnimation = TweenSequence<Offset>([
       TweenSequenceItem(
         tween: Tween<Offset>(
           begin: widget.startPosition,
-          end: Offset(
-            widget.startPosition.dx + (widget.endPosition.dx - widget.startPosition.dx) * 0.7,
-            widget.startPosition.dy - 50, // Arco verso l'alto
-          ),
+          end: buttonCenter,
         ).chain(CurveTween(curve: Curves.easeOut)),
         weight: 50.0,
       ),
       TweenSequenceItem(
         tween: Tween<Offset>(
-          begin: Offset(
-            widget.startPosition.dx + (widget.endPosition.dx - widget.startPosition.dx) * 0.7,
-            widget.startPosition.dy - 50,
-          ),
+          begin: buttonCenter,
           end: widget.endPosition,
         ).chain(CurveTween(curve: Curves.easeIn)),
         weight: 50.0,
@@ -147,18 +143,18 @@ class _DrinkToGaugeAnimationState extends State<DrinkToGaugeAnimation>
                   angle: _rotationAnimation.value,
                   child: Transform.scale(
                     scale: _scaleAnimation.value,
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: widget.drinkColor,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: const Icon(
-                        Icons.local_cafe,
-                        color: Colors.white,
-                        size: 24,
-                      ),
+                    child: Image.asset(
+                      widget.beverage.imagePath,
+                      width: 72,
+                      height: 72,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.local_cafe,
+                          color: Colors.white,
+                          size: 24,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -184,7 +180,7 @@ class _DrinkToGaugeAnimationState extends State<DrinkToGaugeAnimation>
       child: CustomPaint(
         painter: ExplosionPainter(
           progress: _explosionAnimation.value,
-          color: widget.drinkColor,
+          color: widget.beverage.color,
         ),
       ),
     );

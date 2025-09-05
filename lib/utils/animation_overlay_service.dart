@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../presentation/widgets/drink_to_gauge_animation.dart';
+import '../domain/models/beverage.dart';
 
 /// Service per gestire le animazioni overlay nell'app
 class AnimationOverlayService {
@@ -8,8 +9,7 @@ class AnimationOverlayService {
   /// Avvia l'animazione del drink che vola verso il gauge
   static void startDrinkToGaugeAnimation({
     required BuildContext context,
-    required String productName,
-    required double caffeineAmount,
+    required Beverage beverage,
     required GlobalKey buttonKey,
     required GlobalKey gaugeKey,
     required VoidCallback onComplete,
@@ -38,19 +38,14 @@ class AnimationOverlayService {
       gaugePosition.dy + gaugeBox.size.height / 2,
     );
 
-    // Determina il colore del drink
-    final drinkColor = _getDrinkColor(productName);
-
     // Crea l'overlay
     _currentOverlay = OverlayEntry(
       builder: (context) => Material(
         color: Colors.transparent,
         child: DrinkToGaugeAnimation(
-          productName: productName,
-          caffeineAmount: caffeineAmount,
+          beverage: beverage,
           startPosition: buttonCenter,
           endPosition: gaugeCenter,
-          drinkColor: drinkColor,
           onComplete: () {
             removeCurrentOverlay();
             onComplete();
@@ -67,12 +62,6 @@ class AnimationOverlayService {
   static void removeCurrentOverlay() {
     _currentOverlay?.remove();
     _currentOverlay = null;
-  }
-
-  /// Determina il colore del drink basato sul tipo
-  static Color _getDrinkColor(String productName) {
-    // Usa un colore arancione standard per tutte le bevande
-    return const Color(0xFFFF8A65); // Arancione caffè
   }
 }
 

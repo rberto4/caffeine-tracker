@@ -7,6 +7,7 @@ import '../../domain/providers/intake_provider.dart';
 import '../../domain/models/intake.dart';
 import '../../domain/models/beverage.dart';
 import '../../utils/app_colors.dart';
+import '../../utils/animation_overlay_service.dart';
 
 /// Grid showing quick add buttons for default beverages
 class QuickAddGrid extends StatefulWidget {
@@ -25,6 +26,7 @@ class _QuickAddGridState extends State<QuickAddGrid>
     with TickerProviderStateMixin {
   late List<AnimationController> _animationControllers;
   late List<Animation<double>> _scaleAnimations;
+  late List<GlobalKey> _buttonKeys;
   bool _isAnimationInProgress = false;
 
   @override
@@ -52,6 +54,9 @@ class _QuickAddGridState extends State<QuickAddGrid>
         curve: Curves.easeInOut,
       ));
     }).toList();
+
+    // Initialize button keys for animation targets
+    _buttonKeys = List.generate(quickProductsCount, (index) => GlobalKey());
   }
 
   @override
@@ -108,6 +113,7 @@ class _QuickAddGridState extends State<QuickAddGrid>
 
   Widget _buildQuickAddCard(Beverage beverage, int index) {
     return Container(
+      key: _buttonKeys[index],
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -260,19 +266,35 @@ class _QuickAddGridState extends State<QuickAddGrid>
       _isAnimationInProgress = true;
     });
 
-    // Play animation
+    // Play scale animation
     await _animationControllers[index].forward();
     await _animationControllers[index].reverse();
 
     // Add haptic feedback
     HapticFeedback.mediumImpact();
 
-    // Add intake
-    await _addIntake(beverage);
-
-    setState(() {
-      _isAnimationInProgress = false;
-    });
+        // Start drink to gauge animation if gauge key is available
+    if (widget.gaugeKey != null && widget.gaugeKey!.currentContext != null) {
+      AnimationOverlayService.startDrinkToGaugeAnimation(
+        context: context,
+        beverage: beverage,
+        buttonKey: _buttonKeys[index],
+        gaugeKey: widget.gaugeKey!,
+        onComplete: () {
+          // Animation completed, add intake
+          _addIntake(beverage);
+          setState(() {
+            _isAnimationInProgress = false;
+          });
+        },
+      );
+    } else {
+      // Fallback: just add intake without animation
+      await _addIntake(beverage);
+      setState(() {
+        _isAnimationInProgress = false;
+      });
+    }
   }
 
   Future<void> _addIntake(Beverage beverage) async {
