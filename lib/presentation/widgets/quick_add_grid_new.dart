@@ -83,9 +83,9 @@ class _QuickAddGridState extends State<QuickAddGrid>
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 1,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
+            childAspectRatio: 1.1,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
           ),
           itemCount: defaultBeverages.length > 4 ? 4 : defaultBeverages.length,
           itemBuilder: (context, index) {
@@ -109,128 +109,73 @@ class _QuickAddGridState extends State<QuickAddGrid>
   Widget _buildQuickAddCard(Beverage beverage, int index) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            beverage.color,
-            beverage.color.withValues(alpha: 0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: beverage.color.withValues(alpha: 0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           onTap: _isAnimationInProgress ? null : () => _onBeverageTap(beverage, index),
-          child: Stack(
-            children: [
-              // Background watermark icon - large and rotated
-              Positioned(
-                top: -40,
-                right: -20,
-                bottom: 0,
-                child: Transform.rotate(
-                  angle: 0.3, // ~12 degrees rotation
-                  child: Image.asset(
-                    beverage.imagePath,
-                    width: 100,
-                    height: 100,
-                    opacity: const AlwaysStoppedAnimation(0.2),
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                            // Fallback to icon if image fails to load
-                            return Icon(
-                              _getIconForBeverage(beverage.name),
-                              color: Colors.white,
-                            );
-                          },
-                        ),
-                ),
-              ),
-              // Content
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Beverage image
-                    Image.asset(
-                      beverage.imagePath,
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        // Fallback to icon if image fails to load
-                        return Icon(
-                          _getIconForBeverage(beverage.name),
-                          color: Colors.white,
-                          size: 32,
-                        );
-                      },
-                    ),
-                    const Spacer(),
-                    // Beverage name
-                    Text(
-                      beverage.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    // Caffeine amount with pill background
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '${beverage.caffeineAmount.toInt()}mg',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Add button
-              Positioned(
-                bottom: 16,
-                right: 16,
-                child: Container(
-                  width: 40,
-                  height: 40,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Beverage image
+                Container(
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(20),
+                    color: beverage.color.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
-                    LucideIcons.plus,
-                    color: Colors.white,
-                    size: 20,
+                  child: Icon(
+                    _getIconForBeverage(beverage.name),
+                    color: beverage.color,
+                    size: 24,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                // Beverage name
+                Text(
+                  beverage.name,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.grey800,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                // Caffeine amount
+                Text(
+                  '${beverage.caffeineAmount.toInt()}mg',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.grey600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                // Volume
+                Text(
+                  '${beverage.volume.toInt()}ml',
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: AppColors.grey500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

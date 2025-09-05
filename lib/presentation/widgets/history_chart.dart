@@ -6,15 +6,12 @@ import '../../utils/app_colors.dart';
 class HistoryChart extends StatelessWidget {
   final Map<DateTime, double> data;
 
-  const HistoryChart({
-    super.key,
-    required this.data,
-  });
+  const HistoryChart({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     if (data.isEmpty) {
-      return _buildEmptyChart();
+      return _buildEmptyChart(context);
     }
 
     final maxY = _getMaxY();
@@ -25,10 +22,13 @@ class HistoryChart extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
+          drawHorizontalLine: true,
           horizontalInterval: interval,
           getDrawingHorizontalLine: (value) {
             return FlLine(
-              color: AppColors.grey200,
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.1),
               strokeWidth: 1,
             );
           },
@@ -42,8 +42,10 @@ class HistoryChart extends StatelessWidget {
               getTitlesWidget: (value, meta) {
                 return Text(
                   '${value.toInt()}',
-                  style: const TextStyle(
-                    color: AppColors.grey500,
+                  style: TextStyle(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.5),
                     fontSize: 12,
                   ),
                 );
@@ -62,8 +64,10 @@ class HistoryChart extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       '${date.day}/${date.month}',
-                      style: const TextStyle(
-                        color: AppColors.grey500,
+                      style: TextStyle(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.5),
                         fontSize: 10,
                       ),
                     ),
@@ -83,7 +87,9 @@ class HistoryChart extends StatelessWidget {
         borderData: FlBorderData(
           show: true,
           border: Border.all(
-            color: AppColors.grey200,
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.1),
             width: 1,
           ),
         ),
@@ -91,7 +97,7 @@ class HistoryChart extends StatelessWidget {
           LineChartBarData(
             spots: _buildSpots(),
             isCurved: true,
-            color: AppColors.primaryOrange,
+            color: Theme.of(context).colorScheme.primary,
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: FlDotData(
@@ -99,15 +105,19 @@ class HistoryChart extends StatelessWidget {
               getDotPainter: (spot, percent, barData, index) {
                 return FlDotCirclePainter(
                   radius: 4,
-                  color: AppColors.primaryOrange,
-                  strokeWidth: 2,
-                  strokeColor: Colors.white,
+                  color: Theme.of(context).colorScheme.primary,
+                  strokeWidth: 1,
+                  strokeColor: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.1),
                 );
               },
             ),
             belowBarData: BarAreaData(
               show: true,
-              color: AppColors.primaryOrange.withOpacity(0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.2),
             ),
           ),
         ],
@@ -117,7 +127,7 @@ class HistoryChart extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyChart() {
+  Widget _buildEmptyChart(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -125,13 +135,17 @@ class HistoryChart extends StatelessWidget {
           Icon(
             Icons.show_chart,
             size: 48,
-            color: AppColors.grey300,
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 12),
           Text(
             'No data to display',
             style: TextStyle(
-              color: AppColors.grey500,
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.5),
               fontSize: 14,
             ),
           ),
@@ -143,19 +157,19 @@ class HistoryChart extends StatelessWidget {
   List<FlSpot> _buildSpots() {
     final spots = <FlSpot>[];
     final dates = data.keys.toList()..sort();
-    
+
     for (int i = 0; i < dates.length; i++) {
       final date = dates[i];
       final value = data[date] ?? 0.0;
       spots.add(FlSpot(i.toDouble(), value));
     }
-    
+
     return spots;
   }
 
   double _getMaxY() {
     if (data.isEmpty) return 400.0;
-    
+
     final maxValue = data.values.reduce((a, b) => a > b ? a : b);
     // Add 20% padding and round to nearest 50
     final padded = maxValue * 1.2;
@@ -166,7 +180,7 @@ class HistoryChart extends StatelessWidget {
     // Target 4-5 divisions on Y axis
     const targetDivisions = 4.0;
     final rawInterval = maxY / targetDivisions;
-    
+
     // Round to nice numbers (10, 25, 50, 100, 200, 250, 500, etc.)
     if (rawInterval <= 10) return 10;
     if (rawInterval <= 25) return 25;
@@ -175,7 +189,7 @@ class HistoryChart extends StatelessWidget {
     if (rawInterval <= 200) return 200;
     if (rawInterval <= 250) return 250;
     if (rawInterval <= 500) return 500;
-    
+
     // For very high values, use multiples of 500
     return ((rawInterval / 500).ceil() * 500).toDouble();
   }

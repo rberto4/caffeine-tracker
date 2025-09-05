@@ -47,20 +47,77 @@ enum WeightUnit {
   }
 }
 
-/// Enum representing caffeine measurement units
+/// Enum representing volume/liquid measurement units
 @HiveType(typeId: 4)
+enum VolumeUnit {
+  @HiveField(0)
+  ml,
+  @HiveField(1)
+  l,
+  @HiveField(2)
+  oz;
+
+  String get displayName {
+    switch (this) {
+      case VolumeUnit.ml:
+        return 'Millilitri';
+      case VolumeUnit.l:
+        return 'Litri';
+      case VolumeUnit.oz:
+        return 'Once fluide';
+    }
+  }
+
+  String get abbreviation {
+    switch (this) {
+      case VolumeUnit.ml:
+        return 'ml';
+      case VolumeUnit.l:
+        return 'l';
+      case VolumeUnit.oz:
+        return 'fl oz';
+    }
+  }
+
+  /// Convert volume to milliliters
+  double toMl(double value) {
+    switch (this) {
+      case VolumeUnit.ml:
+        return value;
+      case VolumeUnit.l:
+        return value * 1000;
+      case VolumeUnit.oz:
+        return value * 29.5735; // 1 fl oz = 29.5735 ml
+    }
+  }
+
+  /// Convert from milliliters to this unit
+  double fromMl(double ml) {
+    switch (this) {
+      case VolumeUnit.ml:
+        return ml;
+      case VolumeUnit.l:
+        return ml / 1000;
+      case VolumeUnit.oz:
+        return ml / 29.5735;
+    }
+  }
+}
+
+/// Enum representing caffeine measurement units
+@HiveType(typeId: 5)
 enum CaffeineUnit {
   @HiveField(0)
   mg,
   @HiveField(1)
-  g;
+  oz;
 
   String get displayName {
     switch (this) {
       case CaffeineUnit.mg:
         return 'Milligrammi';
-      case CaffeineUnit.g:
-        return 'Grammi';
+      case CaffeineUnit.oz:
+        return 'Once';
     }
   }
 
@@ -68,8 +125,28 @@ enum CaffeineUnit {
     switch (this) {
       case CaffeineUnit.mg:
         return 'mg';
-      case CaffeineUnit.g:
-        return 'g';
+      case CaffeineUnit.oz:
+        return 'oz';
+    }
+  }
+
+  /// Convert caffeine to milligrams
+  double toMg(double value) {
+    switch (this) {
+      case CaffeineUnit.mg:
+        return value;
+      case CaffeineUnit.oz:
+        return value * 28349.5; // 1 oz = 28349.5 mg
+    }
+  }
+
+  /// Convert from milligrams to this unit
+  double fromMg(double mg) {
+    switch (this) {
+      case CaffeineUnit.mg:
+        return mg;
+      case CaffeineUnit.oz:
+        return mg / 28349.5;
     }
   }
 }
@@ -91,6 +168,8 @@ class UserProfile {
   final DateTime createdAt;
   @HiveField(6)
   final DateTime updatedAt;
+  @HiveField(7)
+  final VolumeUnit volumeUnit;
 
   UserProfile({
     required this.weight,
@@ -98,6 +177,7 @@ class UserProfile {
     required this.gender,
     this.weightUnit = WeightUnit.kg,
     this.caffeineUnit = CaffeineUnit.mg,
+    this.volumeUnit = VolumeUnit.ml,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -109,12 +189,22 @@ class UserProfile {
 
   /// Convert caffeine amount to display unit
   double convertCaffeineAmount(double amountInMg) {
-    return caffeineUnit == CaffeineUnit.mg ? amountInMg : amountInMg / 1000; // mg to g
+    return caffeineUnit.fromMg(amountInMg);
   }
 
   /// Convert caffeine amount from display unit to mg
   double convertCaffeineToMg(double displayAmount) {
-    return caffeineUnit == CaffeineUnit.mg ? displayAmount : displayAmount * 1000; // g to mg
+    return caffeineUnit.toMg(displayAmount);
+  }
+
+  /// Convert volume amount to display unit
+  double convertVolumeAmount(double amountInMl) {
+    return volumeUnit.fromMl(amountInMl);
+  }
+
+  /// Convert volume amount from display unit to ml
+  double convertVolumeToMl(double displayAmount) {
+    return volumeUnit.toMl(displayAmount);
   }
 
   /// Calculate maximum daily caffeine intake based on weight, age, and gender
@@ -155,6 +245,7 @@ class UserProfile {
       gender: Gender.values[json['gender'] as int? ?? 0],
       weightUnit: WeightUnit.values[json['weightUnit'] as int? ?? 0],
       caffeineUnit: CaffeineUnit.values[json['caffeineUnit'] as int? ?? 0],
+      volumeUnit: VolumeUnit.values[json['volumeUnit'] as int? ?? 0],
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt'] as int),
       updatedAt: DateTime.fromMillisecondsSinceEpoch(json['updatedAt'] as int),
     );
@@ -168,6 +259,7 @@ class UserProfile {
       'gender': gender.index,
       'weightUnit': weightUnit.index,
       'caffeineUnit': caffeineUnit.index,
+      'volumeUnit': volumeUnit.index,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'updatedAt': updatedAt.millisecondsSinceEpoch,
     };
@@ -180,6 +272,7 @@ class UserProfile {
     Gender? gender,
     WeightUnit? weightUnit,
     CaffeineUnit? caffeineUnit,
+    VolumeUnit? volumeUnit,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -189,6 +282,7 @@ class UserProfile {
       gender: gender ?? this.gender,
       weightUnit: weightUnit ?? this.weightUnit,
       caffeineUnit: caffeineUnit ?? this.caffeineUnit,
+      volumeUnit: volumeUnit ?? this.volumeUnit,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -196,7 +290,7 @@ class UserProfile {
 
   @override
   String toString() {
-    return 'UserProfile(weight: $weight${weightUnit.abbreviation}, age: $age, gender: ${gender.displayName}, maxDailyCaffeine: $maxDailyCaffeine${caffeineUnit.abbreviation})';
+    return 'UserProfile(weight: $weight${weightUnit.abbreviation}, age: $age, gender: ${gender.displayName}, volumeUnit: ${volumeUnit.abbreviation}, maxDailyCaffeine: $maxDailyCaffeine${caffeineUnit.abbreviation})';
   }
 
   @override
@@ -207,11 +301,12 @@ class UserProfile {
            other.age == age &&
            other.gender == gender &&
            other.weightUnit == weightUnit &&
-           other.caffeineUnit == caffeineUnit;
+           other.caffeineUnit == caffeineUnit &&
+           other.volumeUnit == volumeUnit;
   }
 
   @override
-  int get hashCode => weight.hashCode ^ age.hashCode ^ gender.hashCode ^ weightUnit.hashCode ^ caffeineUnit.hashCode;
+  int get hashCode => weight.hashCode ^ age.hashCode ^ gender.hashCode ^ weightUnit.hashCode ^ caffeineUnit.hashCode ^ volumeUnit.hashCode;
 }
 
 /// Enum representing different caffeine intake status levels

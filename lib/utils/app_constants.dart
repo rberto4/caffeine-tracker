@@ -70,3 +70,67 @@ class CaffeineProducts {
     return products[productName] ?? 0.0;
   }
 }
+
+/// Beverage image assets
+class BeverageAssets {
+  BeverageAssets._();
+
+  // Available beverage images
+  static const String coffeeCup = 'assets/images/coffee-cup.png';
+  static const String coffeeCup2 = 'assets/images/coffee-cup-2.png';
+  static const String coffeeCup3 = 'assets/images/coffee-cup-3.png';
+  static const String coffeeCup4 = 'assets/images/coffee-cup-4.png';
+  static const String coffeeMug = 'assets/images/coffee-mug.png';
+  static const String teaCup = 'assets/images/tea-cup.png';
+  static const String energyDrink = 'assets/images/energy-drink.png';
+  static const String energyDrink2 = 'assets/images/energy-drink-2.png';
+  static const String energyDrink3 = 'assets/images/energy-drink-3.png';
+  static const String softDrink = 'assets/images/soft-drink.png';
+  static const String hotCocoa = 'assets/images/hot-cocoa.png';
+  static const String drink = 'assets/images/drink.png';
+
+  /// List of all available beverage images
+  static const List<String> allImages = [
+    coffeeCup,
+    coffeeCup2,
+    coffeeCup3,
+    coffeeCup4,
+    coffeeMug,
+    teaCup,
+    energyDrink,
+    energyDrink2,
+    energyDrink3,
+    softDrink,
+    hotCocoa,
+    drink,
+  ];
+
+  /// Get beverage image by index
+  static String getBeverageImage(int index) {
+    return allImages[index % allImages.length];
+  }
+
+  /// Get suggested image for beverage type
+  static String getSuggestedImageForType(String beverageName) {
+    final name = beverageName.toLowerCase();
+    
+    if (name.contains('coffee') || name.contains('espresso') || 
+        name.contains('cappuccino') || name.contains('latte') ||
+        name.contains('americano') || name.contains('macchiato') ||
+        name.contains('mocha')) {
+      return coffeeCup;
+    } else if (name.contains('tea')) {
+      return teaCup;
+    } else if (name.contains('energy') || name.contains('red bull') || 
+               name.contains('monster')) {
+      return energyDrink;
+    } else if (name.contains('coca') || name.contains('pepsi') || 
+               name.contains('cola')) {
+      return softDrink;
+    } else if (name.contains('cocoa') || name.contains('chocolate')) {
+      return hotCocoa;
+    } else {
+      return drink;
+    }
+  }
+}

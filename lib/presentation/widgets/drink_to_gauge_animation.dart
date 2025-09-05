@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'drink_icon.dart';
 
 /// Widget che gestisce l'animazione del volo dell'icona dalla quick add al gauge
 class DrinkToGaugeAnimation extends StatefulWidget {
@@ -148,11 +147,18 @@ class _DrinkToGaugeAnimationState extends State<DrinkToGaugeAnimation>
                   angle: _rotationAnimation.value,
                   child: Transform.scale(
                     scale: _scaleAnimation.value,
-                    child: DrinkIcon(
-                      productName: widget.productName,
-                      size: 48,
-                      showBackground: true,
-                      backgroundColor: widget.drinkColor.withValues(alpha: 0.2),
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: widget.drinkColor,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: const Icon(
+                        Icons.local_cafe,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
                   ),
                 ),

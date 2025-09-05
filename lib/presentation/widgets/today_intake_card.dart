@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import '../../domain/providers/caffeine_provider.dart';
+import '../../domain/providers/intake_provider.dart';
 import '../../utils/app_colors.dart';
 import 'modern_intake_list_item.dart';
 
@@ -13,45 +13,42 @@ class TodayIntakeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     
-    return Consumer<CaffeineProvider>(
-      builder: (context, caffeineProvider, child) {
-        final todayIntakes = caffeineProvider.todayIntakes;
-        final totalCaffeine = caffeineProvider.todayTotalCaffeine;
+    return Consumer<IntakeProvider>(
+      builder: (context, intakeProvider, child) {
+        final todayIntakes = intakeProvider.todayIntakes;
+        final totalCaffeine = intakeProvider.todayTotalCaffeine;
         
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      LucideIcons.coffee,
-                      color: AppColors.primaryOrange,
-                      size: 20,
-                    ),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryOrange.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Today\'s Intake',
-                    style: textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+                  child: const Icon(
+                    LucideIcons.coffee,
+                    color: AppColors.primaryOrange,
+                    size: 20,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Today\'s Intake',
+                  style: textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ],
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             
             if (todayIntakes.isEmpty) 
               Padding(
@@ -109,15 +106,13 @@ class TodayIntakeCard extends StatelessWidget {
         // Summary
         _buildSummaryRow(intakes.length, totalCaffeine, textTheme, context),
         
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         
         // Recent intakes (max 3)
         Column(
           children: [
             ...intakes.take(3).map((intake) => ModernIntakeListItem(
               intake: intake,
-              showDeleteButton: true,
-              showFullDate: false,
               onDelete: () => _deleteIntake(context, intake.id),
             )),
           ],
@@ -165,11 +160,11 @@ class TodayIntakeCard extends StatelessWidget {
     );
 
     if (confirmed == true) {
-      final caffeineProvider = Provider.of<CaffeineProvider>(
+      final intakeProvider = Provider.of<IntakeProvider>(
         context,
         listen: false,
       );
-      await caffeineProvider.removeIntake(intakeId);
+      await intakeProvider.deleteIntake(intakeId);
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -22,6 +22,7 @@ class UserProfileAdapter extends TypeAdapter<UserProfile> {
       gender: fields[2] as Gender,
       weightUnit: fields[3] as WeightUnit,
       caffeineUnit: fields[4] as CaffeineUnit,
+      volumeUnit: fields[7] as VolumeUnit,
       createdAt: fields[5] as DateTime,
       updatedAt: fields[6] as DateTime,
     );
@@ -30,7 +31,7 @@ class UserProfileAdapter extends TypeAdapter<UserProfile> {
   @override
   void write(BinaryWriter writer, UserProfile obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.weight)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class UserProfileAdapter extends TypeAdapter<UserProfile> {
       ..writeByte(5)
       ..write(obj.createdAt)
       ..writeByte(6)
-      ..write(obj.updatedAt);
+      ..write(obj.updatedAt)
+      ..writeByte(7)
+      ..write(obj.volumeUnit);
   }
 
   @override
@@ -136,9 +139,53 @@ class WeightUnitAdapter extends TypeAdapter<WeightUnit> {
           typeId == other.typeId;
 }
 
-class CaffeineUnitAdapter extends TypeAdapter<CaffeineUnit> {
+class VolumeUnitAdapter extends TypeAdapter<VolumeUnit> {
   @override
   final int typeId = 4;
+
+  @override
+  VolumeUnit read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return VolumeUnit.ml;
+      case 1:
+        return VolumeUnit.l;
+      case 2:
+        return VolumeUnit.oz;
+      default:
+        return VolumeUnit.ml;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, VolumeUnit obj) {
+    switch (obj) {
+      case VolumeUnit.ml:
+        writer.writeByte(0);
+        break;
+      case VolumeUnit.l:
+        writer.writeByte(1);
+        break;
+      case VolumeUnit.oz:
+        writer.writeByte(2);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is VolumeUnitAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class CaffeineUnitAdapter extends TypeAdapter<CaffeineUnit> {
+  @override
+  final int typeId = 5;
 
   @override
   CaffeineUnit read(BinaryReader reader) {
@@ -146,7 +193,7 @@ class CaffeineUnitAdapter extends TypeAdapter<CaffeineUnit> {
       case 0:
         return CaffeineUnit.mg;
       case 1:
-        return CaffeineUnit.g;
+        return CaffeineUnit.oz;
       default:
         return CaffeineUnit.mg;
     }
@@ -158,7 +205,7 @@ class CaffeineUnitAdapter extends TypeAdapter<CaffeineUnit> {
       case CaffeineUnit.mg:
         writer.writeByte(0);
         break;
-      case CaffeineUnit.g:
+      case CaffeineUnit.oz:
         writer.writeByte(1);
         break;
     }

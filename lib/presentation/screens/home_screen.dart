@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../domain/providers/user_provider.dart';
-import '../../domain/providers/caffeine_provider.dart';
+import '../../domain/providers/intake_provider.dart';
 import '../../utils/app_colors.dart';
 import '../widgets/caffeine_gauge.dart';
 import '../widgets/today_intake_card.dart';
 import '../widgets/quick_add_grid.dart';
-import 'add_intake_screen.dart';
 
 /// Home screen showing caffeine gauge and quick actions
 class HomeScreen extends StatefulWidget {
@@ -38,12 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildCaffeineGauge(),
                 const SizedBox(height: 24),
                 _buildQuickAddSection(context),
-
                 const SizedBox(height: 24),
                 _buildTodayIntakeCard(),
-
-                const SizedBox(height: 24),
-                _buildAddButton(context),
                 const SizedBox(height: 100), // Bottom padding for navigation
               ],
             ),
@@ -96,9 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCaffeineGauge() {
-    return Consumer2<UserProvider, CaffeineProvider>(
-      builder: (context, userProvider, caffeineProvider, child) {
-        final currentIntake = caffeineProvider.todayTotalCaffeine;
+    return Consumer2<UserProvider, IntakeProvider>(
+      builder: (context, userProvider, intakeProvider, child) {
+        final currentIntake = intakeProvider.todayTotalCaffeine;
         final maxIntake = userProvider.maxDailyCaffeine;
 
         return Container(
@@ -150,38 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildAddButton(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: ElevatedButton.icon(
-        onPressed: () => _navigateToAddIntake(context),
-        icon: const Icon(LucideIcons.plus),
-        label: const Text('Add Caffeine Intake'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryOrange,
-          foregroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 2,
-        ),
-      ),
-    );
-  }
+  
 
   Future<void> _refreshData(BuildContext context) async {
-    final caffeineProvider = Provider.of<CaffeineProvider>(
-      context,
-      listen: false,
-    );
-    await caffeineProvider.initializeData();
-  }
-
-  void _navigateToAddIntake(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const AddIntakeScreen()));
+    // Refresh providers if needed
+    // Currently handled automatically by the providers
   }
 }

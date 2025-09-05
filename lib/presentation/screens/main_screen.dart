@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:provider/provider.dart';
-import '../../domain/providers/caffeine_provider.dart';
 import '../../utils/app_colors.dart';
 import 'home_screen.dart';
-import 'history_screen.dart';
+import 'statistics_screen.dart';
+import 'calendar_screen.dart';
 import 'profile_screen.dart';
 
 /// Main screen with bottom navigation
@@ -25,14 +24,12 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _screens = [
       const HomeScreen(),
-      const HistoryScreen(),
+      const StatisticsScreen(),
+      const CalendarScreen(),
       const ProfileScreen(),
     ];
     
-    // Initialize providers
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<CaffeineProvider>(context, listen: false).initializeData();
-    });
+    // Providers are initialized in main.dart
   }
 
   @override
@@ -85,12 +82,17 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(LucideIcons.barChart3),
             activeIcon: Icon(LucideIcons.barChart3),
-            label: 'History',
+            label: 'Statistiche',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(LucideIcons.calendarDays),
+            activeIcon: Icon(LucideIcons.calendarDays),
+            label: 'Cronologia',
           ),
           BottomNavigationBarItem(
             icon: Icon(LucideIcons.user),
             activeIcon: Icon(LucideIcons.user),
-            label: 'Profile',
+            label: 'Profilo',
           ),
         ],
       ),

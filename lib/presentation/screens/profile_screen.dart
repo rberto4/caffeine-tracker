@@ -1,8 +1,8 @@
+import 'package:caffeine_tracker/domain/providers/intake_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../domain/providers/user_provider.dart';
-import '../../domain/providers/caffeine_provider.dart';
 import '../../utils/app_colors.dart';
 import 'settings_screen.dart';
 
@@ -186,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildStatsCard() {
-    return Consumer<CaffeineProvider>(
+    return Consumer<IntakeProvider>(
       builder: (context, caffeineProvider, child) {
         final stats = caffeineProvider.getStatistics();
 
@@ -224,25 +224,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 _buildStatCard(
                   'Assunzioni Totali',
-                  '${stats['totalIntakes']}',
+                  '${stats.totalIntakes}',
                   LucideIcons.hash,
                   AppColors.info,
                 ),
                 _buildStatCard(
                   'Media Giornaliera',
-                  '${(stats['averageDaily'] as double).toInt()}mg',
+                  '${stats.averageCaffeine.toInt()}mg',
                   LucideIcons.trendingUp,
                   AppColors.success,
                 ),
                 _buildStatCard(
-                  'Picco Giornaliero',
-                  '${(stats['maxDaily'] as double).toInt()}mg',
+                  'Caffeina Totale',
+                  '${stats.totalCaffeine.toInt()}mg',
                   LucideIcons.zap,
                   AppColors.warning,
                 ),
                 _buildStatCard(
-                  'Giorni Tracciati',
-                  '${stats['daysTracked']}',
+                  'Volume Totale',
+                  '${(stats.totalVolume / 1000).toStringAsFixed(1)}L',
                   LucideIcons.calendar,
                   AppColors.primaryOrange,
                 ),

@@ -1,9 +1,9 @@
+import 'package:caffeine_tracker/domain/providers/intake_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../domain/providers/user_provider.dart';
-import '../../domain/providers/caffeine_provider.dart';
 import '../../domain/models/user_profile.dart';
 import '../../utils/app_colors.dart';
 
@@ -476,8 +476,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           TextButton(
             onPressed: () async {
-              final caffeineProvider = Provider.of<CaffeineProvider>(context, listen: false);
-              await caffeineProvider.clearAllData();
+              final caffeineProvider = Provider.of<IntakeProvider>(context, listen: false);
+              await caffeineProvider.clearAllIntakes();
               if (mounted) {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -512,9 +512,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           TextButton(
             onPressed: () async {
               final userProvider = Provider.of<UserProvider>(context, listen: false);
-              final caffeineProvider = Provider.of<CaffeineProvider>(context, listen: false);
-              
-              await caffeineProvider.clearAllData();
+              final caffeineProvider = Provider.of<IntakeProvider>(context, listen: false);
+
+              await caffeineProvider.clearAllIntakes();
               await userProvider.resetProfile();
               
               if (mounted) {

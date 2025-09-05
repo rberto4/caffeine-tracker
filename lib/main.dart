@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'domain/providers/user_provider.dart';
-import 'domain/providers/caffeine_provider.dart';
-import 'domain/models/caffeine_intake.dart';
+import 'domain/providers/beverage_provider.dart';
+import 'domain/providers/intake_provider.dart';
+import 'domain/models/user_profile.dart';
+import 'domain/models/beverage.dart';
+import 'domain/models/intake.dart';
 import 'data/services/storage_service.dart';
+import 'utils/default_beverage_service.dart';
 import 'presentation/screens/onboarding_screen.dart';
 import 'presentation/screens/main_screen.dart';
 import 'utils/app_theme.dart';
@@ -14,10 +18,21 @@ void main() async {
   
   // Initialize Hive
   await Hive.initFlutter();
-  Hive.registerAdapter(CaffeineIntakeAdapter());
+  
+  // Register all Hive adapters
+  Hive.registerAdapter(UserProfileAdapter());
+  Hive.registerAdapter(GenderAdapter());
+  Hive.registerAdapter(WeightUnitAdapter());
+  Hive.registerAdapter(VolumeUnitAdapter());
+  Hive.registerAdapter(CaffeineUnitAdapter());
+  Hive.registerAdapter(BeverageAdapter());
+  Hive.registerAdapter(IntakeAdapter());
   
   // Initialize storage service
   await StorageService.init();
+  
+  // Initialize default beverages
+  await DefaultBeverageService.initializeDefaultBeverages();
   
   runApp(const CaffeineTrackerApp());
 }
@@ -30,7 +45,8 @@ class CaffeineTrackerApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => CaffeineProvider()),
+        ChangeNotifierProvider(create: (_) => BeverageProvider()),
+        ChangeNotifierProvider(create: (_) => IntakeProvider()),
       ],
       child: MaterialApp(
         title: 'Caffeine Tracker',
@@ -67,7 +83,15 @@ class _AppInitializerState extends State<AppInitializer> {
   Future<void> _initializeApp() async {
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
-      await userProvider.initializeUser();
+      final beverageProvider = Provider.of<BeverageProvider>(context, listen: false);
+      final intakeProvider = Provider.of<IntakeProvider>(context, listen: false);
+      
+      // Initialize providers in parallel
+      await Future.wait([
+        userProvider.initializeUser(),
+        beverageProvider.initialize(),
+        intakeProvider.initialize(),
+      ]);
       
       if (mounted) {
         setState(() {

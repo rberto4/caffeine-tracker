@@ -47,4 +47,29 @@ class AppColors {
   static const Color caffeineLevel2 = Color(0xFFFFEB3B); // Medium (Yellow)
   static const Color caffeineLevel3 = Color(0xFFFF9800); // High (Orange)
   static const Color caffeineLevel4 = Color(0xFFF44336); // Very High (Red)
+
+  // Beverage category colors (for drink identification)
+  static const Color beverageBlue = Color(0xFF2196F3);    // Blue
+  static const Color beverageGreen = Color(0xFF4CAF50);   // Green
+  static const Color beverageOrange = Color(0xFFFF9800);  // Orange
+  static const Color beveragePurple = Color(0xFF9C27B0);  // Purple
+  static const Color beverageRed = Color(0xFFF44336);     // Red
+  static const Color beverageTeal = Color(0xFF009688);    // Teal
+  static const Color beverageBrown = Color(0xFF795548);  // Brown
+
+  /// List of available beverage colors
+  static const List<Color> beverageColors = [
+    beverageBlue,
+    beverageGreen,
+    beverageOrange,
+    beveragePurple,
+    beverageRed,
+    beverageTeal,
+    beverageBrown,
+  ];
+
+  /// Get beverage color by index
+  static Color getBeverageColor(int index) {
+    return beverageColors[index % beverageColors.length];
+  }
 }

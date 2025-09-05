@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../presentation/widgets/drink_to_gauge_animation.dart';
-import 'drink_categories.dart';
 
 /// Service per gestire le animazioni overlay nell'app
 class AnimationOverlayService {
@@ -72,20 +71,8 @@ class AnimationOverlayService {
 
   /// Determina il colore del drink basato sul tipo
   static Color _getDrinkColor(String productName) {
-    final category = DrinkCategories.getCategory(productName);
-    
-    switch (category) {
-      case DrinkCategories.espressoCategory:
-        return const Color(0xFF8B4513); // Marrone caffè
-      case DrinkCategories.coffeeCategory:
-        return const Color(0xFF6F4F37); // Marrone caffè lungo
-      case DrinkCategories.energyDrinkCategory:
-        return const Color(0xFFFF6B6B); // Rosso energy
-      case DrinkCategories.sodaCategory:
-        return const Color(0xFF4ECDC4); // Azzurro soda
-      default:
-        return const Color(0xFF6C63FF); // Viola generico
-    }
+    // Usa un colore arancione standard per tutte le bevande
+    return const Color(0xFFFF8A65); // Arancione caffè
   }
 }
 
