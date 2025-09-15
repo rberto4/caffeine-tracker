@@ -16,7 +16,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-  
+
   late final List<Widget> _screens;
 
   @override
@@ -24,21 +24,18 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     _screens = [
       const HomeScreen(),
-      const StatisticsScreen(),
       const CalendarScreen(),
+      const StatisticsScreen(),
       const ProfileScreen(),
     ];
-    
+
     // Providers are initialized in main.dart
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: _buildBottomNavigation(),
     );
   }
@@ -64,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
         type: BottomNavigationBarType.fixed,
         backgroundColor: Theme.of(context).colorScheme.surface,
         selectedItemColor: AppColors.primaryOrange,
-        unselectedItemColor: AppColors.grey500,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurface,
         selectedLabelStyle: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 12,
@@ -73,6 +70,8 @@ class _MainScreenState extends State<MainScreen> {
           fontWeight: FontWeight.w500,
           fontSize: 12,
         ),
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(LucideIcons.home),
@@ -80,14 +79,14 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(LucideIcons.barChart3),
-            activeIcon: Icon(LucideIcons.barChart3),
-            label: 'Statistiche',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(LucideIcons.calendarDays),
             activeIcon: Icon(LucideIcons.calendarDays),
             label: 'Cronologia',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(LucideIcons.barChart3),
+            activeIcon: Icon(LucideIcons.barChart3),
+            label: 'Statistiche',
           ),
           BottomNavigationBarItem(
             icon: Icon(LucideIcons.user),

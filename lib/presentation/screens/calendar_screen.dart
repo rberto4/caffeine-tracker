@@ -16,19 +16,18 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _selectedDate = DateTime.now();
-  bool _showCalendar = false;
+  bool _showCalendar = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-     
+
       body: Consumer<IntakeProvider>(
         builder: (context, intakeProvider, child) {
           final selectedDayIntakes = intakeProvider.getIntakesForDate(
             _selectedDate,
           );
-
           return SafeArea(
             child: SingleChildScrollView(
               child: Column(
@@ -39,33 +38,47 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Cronologia',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24
+                        Expanded(
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                            leading: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryOrange.withValues(
+                                  alpha: 0.1,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                LucideIcons.calendarDays,
+                                color: AppColors.primaryOrange,
+                                size: 20,
+                              ),
+                            ),
+                            title: Text(
+                              "Calendar",
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                  ),
+                            ),
+                            subtitle: Text(
+                              "Check your caffeine intake history",
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.6),
+                                  ),
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _showCalendar = !_showCalendar;
-                            });
-                          },
-                          icon: Icon(
-                            _showCalendar
-                                ? LucideIcons.calendarDays
-                                : LucideIcons.calendar,
-                          color: Theme.of(context).colorScheme.primary,
-                          ),
-                          tooltip: _showCalendar
-                              ? 'Nascondi Calendario'
-                              : 'Mostra Calendario',
                         ),
                       ],
                     ),
                   ),
-            
+
                   // Calendar widget
                   if (_showCalendar) ...[
                     Padding(
@@ -81,7 +94,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     ),
                     const SizedBox(height: 16),
                   ],
-            
+
                   // Selected date info
                   if (_showCalendar)
                     ListTile(
@@ -89,7 +102,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       leading: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
@@ -106,9 +121,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       ),
                       subtitle: Text(
                         '${selectedDayIntakes.length} ${selectedDayIntakes.length == 1 ? 'assunzione' : 'assunzioni'}',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
                       ),
 
                       trailing: Text(
@@ -118,11 +135,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 24,
                         ),
-                        ),
+                      ),
                     ),
-                  
 
-            
                   // History list
                   _showCalendar
                       ? _buildSelectedDateHistory(selectedDayIntakes)
@@ -150,7 +165,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 'Nessuna assunzione di caffeina',
                 style: Theme.of(
                   context,
-                ).textTheme.titleMedium?.copyWith(color: AppColors.grey600),
+                ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
               Text(
@@ -229,9 +244,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
             const SizedBox(height: 8),
             Text(
               'Inizia a registrare le tue assunzioni di caffeina',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.grey500,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.grey500),
               textAlign: TextAlign.center,
             ),
           ],
@@ -288,9 +303,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.error,
-              ),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.error),
               child: const Text('Elimina'),
             ),
           ],
@@ -299,7 +312,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
 
     if (confirmed == true && mounted) {
-      final intakeProvider = Provider.of<IntakeProvider>(context, listen: false);
+      final intakeProvider = Provider.of<IntakeProvider>(
+        context,
+        listen: false,
+      );
       await intakeProvider.deleteIntake(id);
 
       if (mounted) {

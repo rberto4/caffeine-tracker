@@ -1,4 +1,5 @@
 import 'package:caffeine_tracker/domain/providers/intake_provider.dart';
+import 'package:caffeine_tracker/domain/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -14,58 +15,124 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  int _weekOffset = 0; // 0 = settimana corrente, -1 = settimana precedente, etc.
+  int _weekOffset =
+      0; // 0 = settimana corrente, -1 = settimana precedente, etc.
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
-        child: Consumer<IntakeProvider>(
-          builder: (context, caffeineProvider, child) {
-            final statistics = caffeineProvider.getStatistics();
+        child: Consumer2<IntakeProvider, UserProvider>(
+          builder: (context, caffeineProvider, userProvider, child) {
             final chartData = _getWeekData(caffeineProvider);
-        
+            final weekStats = _getWeekStatistics(caffeineProvider);
+
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                   ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryOrange.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          LucideIcons.barChart2,
-                          color: AppColors.primaryOrange,
-                          size: 20,
-                        ),
+                  ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryOrange.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      title: Text(
-                        "Statistiche",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                                                      fontSize: 24
-
-                        ),
-                      ),
-                      subtitle: Text(
-                        "Statistiche settimanali",
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
+                      child: const Icon(
+                        LucideIcons.barChart2,
+                        color: AppColors.primaryOrange,
+                        size: 20,
                       ),
                     ),
+                    title: Text(
+                      "Statistiche",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "Statistiche settimanali",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   _buildChart(chartData),
                   const SizedBox(height: 24),
-                  _buildStatsCards(statistics),
-                  const SizedBox(height: 24),
-                  _buildWeekComparisonCard(caffeineProvider),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        LucideIcons.barChart4,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 20,
+                      ),
+                    ),
+                    title: Text(
+                      "Dati settimanali",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Consumo di caffeina e volume totale per la settimana selezionata',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildStatsCards(weekStats, userProvider),
+                  const SizedBox(height: 16),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        LucideIcons.calendar,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 20,
+                      ),
+                    ),
+                    title: Text(
+                      "Dati a confronto",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Confronto tra la settimana selezionata e la settimana precedente',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildWeekComparisonCard(caffeineProvider, userProvider),
                   const SizedBox(height: 100), // Bottom padding
                 ],
               ),
@@ -83,12 +150,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-           BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
-              ),
-        ]
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,14 +196,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           SizedBox(height: 200, child: HistoryChart(data: data)),
         ],
       ),
     );
   }
 
-  Widget _buildStatsCards(IntakeStatistics stats) {
+  Widget _buildStatsCards(Map<String, double> weekStats, UserProvider userProvider) {
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -147,25 +214,25 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       children: [
         _buildStatCard(
           'Total Intakes',
-          '${stats.totalIntakes}',
+          '${weekStats['totalIntakes']!.toInt()}',
           LucideIcons.hash,
           AppColors.info,
         ),
         _buildStatCard(
           'Daily Average',
-          '${stats.averageCaffeine.toInt()}mg',
+          '${userProvider.userProfile!.convertCaffeineAmount(weekStats['averageCaffeine']!).toInt()}${userProvider.caffeineUnit.abbreviation}',
           LucideIcons.trendingUp,
           AppColors.success,
         ),
         _buildStatCard(
           'Total Caffeine',
-          '${stats.totalCaffeine.toInt()}mg',
+          '${userProvider.userProfile!.convertCaffeineAmount(weekStats['totalCaffeine']!).toInt()}${userProvider.caffeineUnit.abbreviation}',
           LucideIcons.zap,
           AppColors.warning,
         ),
         _buildStatCard(
           'Total Volume',
-          '${(stats.totalVolume / 1000).toStringAsFixed(1)}L',
+          _formatVolume(weekStats['totalVolume']!, userProvider),
           LucideIcons.calendar,
           AppColors.primaryOrange,
         ),
@@ -173,19 +240,24 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-           BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
-              ),
-        ]
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -194,18 +266,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
             title,
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.grey600,
-            ),
+            style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -213,88 +279,174 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Widget _buildWeekComparisonCard(IntakeProvider provider) {
-    if (_weekOffset >= 0) {
-      return const SizedBox.shrink(); // Non mostrare per settimana corrente
-    }
+  Widget _buildWeekComparisonCard(IntakeProvider provider, UserProvider userProvider) {
+    final currentWeekStats = _getWeekStatistics(provider);
+    final globalStats = provider.getStatistics();
+    
+    // Calcola medie globali settimanali
+    final globalDays = globalStats.totalIntakes > 0 ? 
+        provider.intakes().map((i) => DateTime(i.timestamp.year, i.timestamp.month, i.timestamp.day))
+            .toSet().length : 1;
+    final globalWeeksApprox = (globalDays / 7).ceil().clamp(1, double.infinity);
+    
+    final globalWeeklyAvgCaffeine = globalStats.totalCaffeine / globalWeeksApprox;
+    final globalWeeklyAvgVolume = globalStats.totalVolume / globalWeeksApprox;
+    final globalWeeklyAvgIntakes = globalStats.totalIntakes.toDouble() / globalWeeksApprox;
 
-    final currentWeekData = _getWeekData(provider);
-    final previousWeekData = _getPreviousWeekData(provider);
-
-    final currentTotal = currentWeekData.values.fold(
-      0.0,
-      (sum, value) => sum + value,
+    return Column(
+      children: [
+        // Confronto con media globale
+        _buildComparisonCard(
+          'Media Globale',
+          currentWeekStats,
+          {
+            'totalCaffeine': globalWeeklyAvgCaffeine,
+            'totalVolume': globalWeeklyAvgVolume,
+            'totalIntakes': globalWeeklyAvgIntakes,
+          },
+          userProvider,
+        ),
+        
+        // Confronto con settimana corrente (solo se non siamo nella settimana corrente)
+        if (_weekOffset < 0) ...[
+          const SizedBox(height: 16),
+          _buildComparisonCard(
+            'Settimana Corrente',
+            currentWeekStats,
+            _getWeekStatisticsForOffset(provider, 0), // Settimana corrente
+            userProvider,
+          ),
+        ],
+      ],
     );
-    final previousTotal = previousWeekData.values.fold(
-      0.0,
-      (sum, value) => sum + value,
-    );
+  }
 
-    final difference = currentTotal - previousTotal;
-    final percentageChange = previousTotal > 0 ? (difference / previousTotal) * 100 : 0.0;
-
+  Widget _buildComparisonCard(
+    String title,
+    Map<String, double> currentStats,
+    Map<String, double> compareStats,
+    UserProvider userProvider,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
-       boxShadow: [
-           BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
-              ),
-        ]
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Confronto Settimanale',
+          Text(
+            title,
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          const SizedBox(height: 16),
+          
+          // Confronto Caffeina
+          _buildComparisonRow(
+            'Caffeina',
+            '${userProvider.userProfile!.convertCaffeineAmount(currentStats['totalCaffeine']!).toInt()} ${userProvider.caffeineUnit.abbreviation}',
+            currentStats['totalCaffeine']! - compareStats['totalCaffeine']!,
+            compareStats['totalCaffeine']!,
+            userProvider.caffeineUnit.abbreviation,
+            userProvider,
+          ),
+          
+          // Confronto Volume
+          _buildComparisonRow(
+            'Volume',
+            _formatVolume(currentStats['totalVolume']!, userProvider),
+            currentStats['totalVolume']! - compareStats['totalVolume']!,
+            compareStats['totalVolume']!,
+            userProvider.userProfile!.volumeUnit.abbreviation,
+            userProvider,
+          ),
+          
+          // Confronto Assunzioni
+          _buildComparisonRow(
+            'Assunzioni',
+            '${currentStats['totalIntakes']!.toInt()}',
+            currentStats['totalIntakes']! - compareStats['totalIntakes']!,
+            compareStats['totalIntakes']!,
+            '',
+            userProvider,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComparisonRow(
+    String label,
+    String currentValue,
+    double difference,
+    double compareValue,
+    String unit,
+    UserProvider userProvider,
+  ) {
+    final percentageChange = compareValue > 0 ? (difference / compareValue) * 100 : 0.0;
+    
+    // Convert difference to display unit based on label
+    String formattedDifference;
+    if (label == 'Caffeina') {
+      final convertedDifference = userProvider.userProfile!.convertCaffeineAmount(difference);
+      formattedDifference = difference >= 0
+          ? '+${convertedDifference.abs().toInt()} $unit'
+          : '-${convertedDifference.abs().toInt()} $unit';
+    } else if (label == 'Volume') {
+      formattedDifference = _formatVolumeDifference(difference, userProvider, difference >= 0);
+    } else {
+      formattedDifference = difference >= 0
+          ? '+${difference.abs().toInt()}'
+          : '-${difference.abs().toInt()}';
+    }
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Questa Settimana',
-                    style: TextStyle(fontSize: 12, color: AppColors.grey600),
-                  ),
-                  Text(
-                    '${currentTotal.toInt()} mg',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              Text(
+                label,
+                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    difference >= 0 ? '+${difference.toInt()} mg' : '${difference.toInt()} mg',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: difference >= 0 ? AppColors.error : AppColors.success,
-                    ),
-                  ),
-                  Text(
-                    '${percentageChange.toStringAsFixed(1)}%',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: difference >= 0 ? AppColors.error : AppColors.success,
-                    ),
-                  ),
-                ],
+              Text(
+                currentValue,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                formattedDifference,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: difference >= 0 ? AppColors.error : AppColors.success,
+                ),
+              ),
+              Text(
+                '${percentageChange.toStringAsFixed(1)}%',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: difference >= 0 ? AppColors.error : AppColors.success,
+                ),
               ),
             ],
           ),
@@ -307,7 +459,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Map<DateTime, double> _getWeekData(IntakeProvider provider) {
     final now = DateTime.now();
     final startOfWeek = now.subtract(
-      Duration(days: now.weekday - 1 + (-_weekOffset * 7)), // Inversione della logica
+      Duration(
+        days: now.weekday - 1 + (-_weekOffset * 7),
+      ), // Inversione della logica
     );
     final weekData = <DateTime, double>{};
 
@@ -319,19 +473,43 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return weekData;
   }
 
-  Map<DateTime, double> _getPreviousWeekData(IntakeProvider provider) {
-    final now = DateTime.now();
-    final startOfPreviousWeek = now.subtract(
-      Duration(days: now.weekday - 1 + (-(_weekOffset - 1) * 7)), // Correzione logica
-    );
-    final weekData = <DateTime, double>{};
-
-    for (int i = 0; i < 7; i++) {
-      final date = startOfPreviousWeek.add(Duration(days: i));
-      weekData[date] = provider.getTotalForDate(date);
+  /// Calcola le statistiche per la settimana selezionata
+  Map<String, double> _getWeekStatistics(IntakeProvider provider) {
+    final weekData = _getWeekData(provider);
+    
+    // Calcola statistiche basate sui dati della settimana
+    final totalCaffeine = weekData.values.fold(0.0, (sum, value) => sum + value);
+    
+    // Calcola il numero di giorni con assunzioni
+    final daysWithIntakes = weekData.values.where((value) => value > 0).length;
+    
+    // Media su 7 giorni
+    final averageCaffeine = totalCaffeine / 7;
+    
+    // Calcola volume totale e numero totale di assunzioni per la settimana
+    double totalVolume = 0.0;
+    int totalIntakes = 0;
+    for (final date in weekData.keys) {
+      totalVolume += provider.getTotalVolumeForDate(date);
+      totalIntakes += provider.getIntakesForDate(date).length;
     }
+    
+    return {
+      'totalCaffeine': totalCaffeine,
+      'totalIntakes': totalIntakes.toDouble(),
+      'averageCaffeine': averageCaffeine,
+      'totalVolume': totalVolume,
+      'daysWithIntakes': daysWithIntakes.toDouble(),
+    };
+  }
 
-    return weekData;
+  /// Ottiene le statistiche per un offset specifico
+  Map<String, double> _getWeekStatisticsForOffset(IntakeProvider provider, int offset) {
+    final originalOffset = _weekOffset;
+    _weekOffset = offset;
+    final stats = _getWeekStatistics(provider);
+    _weekOffset = originalOffset;
+    return stats;
   }
 
   /// Ottiene il titolo della settimana corrente
@@ -344,5 +522,49 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       final weeksAgo = -_weekOffset;
       return '$weeksAgo Settimane Fa';
     }
+  }
+
+  /// Formatta il volume in base alle unità e ai valori
+  String _formatVolume(double volumeInMl, UserProvider userProvider) {
+    final unit = userProvider.userProfile!.volumeUnit;
+    
+    // Se l'unità dell'utente è già litri, usa sempre litri con 2 decimali
+    if (unit.abbreviation == 'l') {
+      final convertedVolume = userProvider.userProfile!.convertVolumeAmount(volumeInMl);
+      return '${convertedVolume.toStringAsFixed(2)}${unit.abbreviation}';
+    }
+    
+    // Se il volume è > 999ml, convertilo automaticamente in litri
+    if (volumeInMl > 999) {
+      final volumeInLiters = volumeInMl / 1000;
+      return '${volumeInLiters.toStringAsFixed(2)}L';
+    }
+    
+    // Altrimenti usa l'unità dell'utente senza decimali
+    final convertedVolume = userProvider.userProfile!.convertVolumeAmount(volumeInMl);
+    return '${convertedVolume.toInt()}${unit.abbreviation}';
+  }
+
+  /// Formatta la differenza di volume per i confronti
+  String _formatVolumeDifference(double differenceInMl, UserProvider userProvider, bool isPositive) {
+    final unit = userProvider.userProfile!.volumeUnit;
+    final sign = isPositive ? '+' : '-';
+    final absDifference = differenceInMl.abs();
+    
+    // Se l'unità dell'utente è già litri, usa sempre litri con 2 decimali
+    if (unit.abbreviation == 'l') {
+      final convertedDifference = userProvider.userProfile!.convertVolumeAmount(absDifference);
+      return '$sign${convertedDifference.toStringAsFixed(2)} ${unit.abbreviation}';
+    }
+    
+    // Se la differenza è > 999ml, convertila automaticamente in litri
+    if (absDifference > 999) {
+      final differenceInLiters = absDifference / 1000;
+      return '$sign${differenceInLiters.toStringAsFixed(2)} L';
+    }
+    
+    // Altrimenti usa l'unità dell'utente senza decimali
+    final convertedDifference = userProvider.userProfile!.convertVolumeAmount(absDifference);
+    return '$sign${convertedDifference.toInt()} ${unit.abbreviation}';
   }
 }
