@@ -16,7 +16,7 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _selectedDate = DateTime.now();
-  bool _showCalendar = true;
+  final bool _showCalendar = true;
 
   @override
   Widget build(BuildContext context) {

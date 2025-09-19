@@ -1,3 +1,4 @@
+import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../domain/models/intake.dart';
@@ -15,17 +16,11 @@ class ModernIntakeListItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: intake.beverage.color.withAlpha(20),
-            blurRadius: 10,
-            offset: const Offset(0, 8),
-          ),
-        ],
+       boxShadow: CustomBoxShadow.cardBoxShadows,
          gradient: LinearGradient(
           colors: [
-            intake.beverage.color.withValues(alpha: 0.3),
-            intake.beverage.color.withValues(alpha: 0.2),
+            intake.beverage.color.withValues(alpha: 1),
+            intake.beverage.color.withValues(alpha: 0.9),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -39,19 +34,24 @@ class ModernIntakeListItem extends StatelessWidget {
         child: Row(
           children: [
             // Beverage icon
-            Image.asset(
-              intake.beverage.imagePath,
-              width: 64,
-              height: 64,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                // Fallback to icon if image fails to load
-                return Icon(
-                  _getIconForBeverage(intake.beverage.name),
-                  color: Colors.white,
-                  size: 32,
-                );
-              },
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: CustomBoxShadow.iconBoxShadows
+              ),
+              child: Image.asset(
+                intake.beverage.imagePath,
+                width: 72,
+                height: 72,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  // Fallback to icon if image fails to load
+                  return Icon(
+                    _getIconForBeverage(intake.beverage.name),
+                    size: 32,
+                  );
+                },
+              ),
             ),
             const SizedBox(width: 12),
 
@@ -64,10 +64,9 @@ class ModernIntakeListItem extends StatelessWidget {
                   // Beverage name
                   Text(
                     intake.beverage.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold
+                        ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -78,7 +77,7 @@ class ModernIntakeListItem extends StatelessWidget {
                       Icon(
                         LucideIcons.fuel,
                         size: 18,
-                        color: AppColors.beverageBrown.withValues(alpha: 0.6),
+                        color: AppColors.beverageBrown,
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -87,7 +86,7 @@ class ModernIntakeListItem extends StatelessWidget {
                           fontSize: 12,
                           color: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          ).colorScheme.onSurface.withValues(alpha: 1),
                         ),
                       ),
                                       
@@ -107,7 +106,7 @@ class ModernIntakeListItem extends StatelessWidget {
                           fontSize: 12,
                           color: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          ).colorScheme.onSurface.withValues(alpha:1),
                         ),
                       ),
                     ],
@@ -132,7 +131,7 @@ class ModernIntakeListItem extends StatelessWidget {
                           fontSize: 12,
                           color: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          ).colorScheme.onSurface.withValues(alpha : 1),
                         ),
                       ),
                     ],

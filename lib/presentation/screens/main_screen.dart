@@ -1,3 +1,4 @@
+import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../utils/app_colors.dart';
@@ -42,15 +43,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBottomNavigation() {
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
+      decoration: BoxDecoration(boxShadow: CustomBoxShadow.cardBoxShadows),
       child: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {

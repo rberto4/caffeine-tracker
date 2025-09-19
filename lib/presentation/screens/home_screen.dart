@@ -1,3 +1,5 @@
+import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
+import 'package:caffeine_tracker/presentation/widgets/today_intake_card.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +7,6 @@ import '../../domain/providers/user_provider.dart';
 import '../../domain/providers/intake_provider.dart';
 import '../../utils/app_colors.dart';
 import '../widgets/caffeine_gauge.dart';
-import '../widgets/today_intake_card.dart';
 import '../widgets/quick_add_grid.dart';
 
 /// Home screen showing caffeine gauge and quick actions
@@ -101,13 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            boxShadow: CustomBoxShadow.cardBoxShadows,
           ),
           child: CaffeineGauge(
             key: _gaugeKey,
@@ -138,14 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        QuickAddGrid(
-          gaugeKey: _gaugeKey,
-        ),
+        QuickAddGrid(gaugeKey: _gaugeKey),
       ],
     );
   }
-
-  
 
   Future<void> _refreshData(BuildContext context) async {
     // Refresh providers if needed

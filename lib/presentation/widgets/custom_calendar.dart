@@ -1,4 +1,5 @@
 import 'package:caffeine_tracker/domain/providers/intake_provider.dart';
+import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -45,13 +46,8 @@ class _CustomCalendarState extends State<CustomCalendar> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
+                boxShadow: CustomBoxShadow.cardBoxShadows
+
       ),
       child: Column(
         children: [_buildHeader(), _buildWeekDayLabels(), _buildCalendarGrid()],

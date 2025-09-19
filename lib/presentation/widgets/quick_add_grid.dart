@@ -1,3 +1,4 @@
+import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -124,13 +125,7 @@ class _QuickAddGridState extends State<QuickAddGrid>
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: beverage.color.withValues(alpha: 0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        boxShadow: CustomBoxShadow.cardBoxShadows,
       ),
       child: Material(
         color: Colors.transparent,

@@ -1,4 +1,6 @@
 import 'package:caffeine_tracker/domain/providers/intake_provider.dart';
+import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
+import 'package:caffeine_tracker/presentation/widgets/stats_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -105,13 +107,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
-              ),
-            ],
+                    boxShadow: CustomBoxShadow.cardBoxShadows
+
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,6 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Consumer<IntakeProvider>(
       builder: (context, caffeineProvider, child) {
         final stats = caffeineProvider.getStatistics();
+        final statsCards = StatsCards(context);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,25 +220,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisSpacing: 8,
               childAspectRatio: 1,
               children: [
-                _buildStatCard(
-                  'Assunzioni Totali',
+                statsCards.buildStatCard(
+                  'Assunzioni xTotali',
                   '${stats.totalIntakes}',
                   LucideIcons.hash,
                   AppColors.info,
                 ),
-                _buildStatCard(
+                statsCards.buildStatCard(
                   'Media Giornaliera',
                   '${stats.averageCaffeine.toInt()}mg',
                   LucideIcons.trendingUp,
                   AppColors.success,
                 ),
-                _buildStatCard(
+                statsCards.buildStatCard(
                   'Caffeina Totale',
                   '${stats.totalCaffeine.toInt()}mg',
-                  LucideIcons.zap,
+                  LucideIcons.fuel,
                   AppColors.warning,
                 ),
-                _buildStatCard(
+                statsCards.buildStatCard(
                   'Volume Totale',
                   '${(stats.totalVolume / 1000).toStringAsFixed(1)}L',
                   LucideIcons.calendar,
@@ -251,57 +249,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildStatCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: textTheme.bodySmall?.copyWith(color: AppColors.grey600),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
     );
   }
 }
