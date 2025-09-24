@@ -1,3 +1,4 @@
+import 'package:caffeine_tracker/presentation/widgets/custom_tile_title.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -12,51 +13,38 @@ class TodayIntakeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    
+
     return Consumer<IntakeProvider>(
       builder: (context, intakeProvider, child) {
         final todayIntakes = intakeProvider.todayIntakes;
         final totalCaffeine = intakeProvider.todayTotalCaffeine;
-        
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Header
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryOrange.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    LucideIcons.coffee,
-                    color: AppColors.primaryOrange,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Today\'s Intake',
-                  style: textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-              ],
+            CustomTileTitle(
+              tittle: 'Assunzioni di oggi',
+              subtitle: 'Visualizza le ultime 3 assunzioni e la caffeina totale',
+              leadingIcon: LucideIcons.coffee,
+              trailingWidget: const SizedBox(),
             ),
-            
-            const SizedBox(height: 8),
-            
-            if (todayIntakes.isEmpty) 
+
+            const SizedBox(height: 16),
+
+            if (todayIntakes.isEmpty)
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 child: _buildEmptyState(textTheme),
               )
             else
-              _buildIntakesList(todayIntakes, totalCaffeine, textTheme, context),
+              _buildIntakesList(
+                todayIntakes,
+                totalCaffeine,
+                textTheme,
+                context,
+              ),
           ],
         );
       },
@@ -68,12 +56,8 @@ class TodayIntakeCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const SizedBox(height: 16),
-        Icon(
-          LucideIcons.coffee,
-          size: 48,
-          color: AppColors.grey300,
-        ),
+        const SizedBox(height: 48),
+        Icon(LucideIcons.coffee, size: 48, color: AppColors.grey300),
         const SizedBox(height: 12),
         Text(
           'No caffeine intake today',
@@ -85,18 +69,16 @@ class TodayIntakeCard extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           'Start tracking your caffeine consumption',
-          style: textTheme.bodyMedium?.copyWith(
-            color: AppColors.grey400,
-          ),
+          style: textTheme.bodyMedium?.copyWith(color: AppColors.grey400),
         ),
-                const SizedBox(height: 16),
+        const SizedBox(height: 16),
       ],
     );
   }
 
   Widget _buildIntakesList(
-    List<dynamic> intakes, 
-    double totalCaffeine, 
+    List<dynamic> intakes,
+    double totalCaffeine,
     TextTheme textTheme,
     BuildContext context,
   ) {
@@ -105,19 +87,21 @@ class TodayIntakeCard extends StatelessWidget {
       children: [
         // Summary
         _buildSummaryRow(intakes.length, totalCaffeine, textTheme, context),
-        
         const SizedBox(height: 8),
-        
         // Recent intakes (max 3)
         Column(
           children: [
-            ...intakes.take(3).map((intake) => ModernIntakeListItem(
-              intake: intake,
-              onDelete: () => _deleteIntake(context, intake.id),
-            )),
+            ...intakes
+                .take(3)
+                .map(
+                  (intake) => ModernIntakeListItem(
+                    intake: intake,
+                    onDelete: () => _deleteIntake(context, intake.id),
+                  ),
+                ),
           ],
         ),
-        
+
         if (intakes.length > 3) ...[
           const SizedBox(height: 8),
           Center(
@@ -130,7 +114,7 @@ class TodayIntakeCard extends StatelessWidget {
             ),
           ),
         ] else ...[
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
         ],
       ],
     );
@@ -177,7 +161,12 @@ class TodayIntakeCard extends StatelessWidget {
     }
   }
 
-  Widget _buildSummaryRow(int count, double totalCaffeine, TextTheme textTheme, BuildContext context) {
+  Widget _buildSummaryRow(
+    int count,
+    double totalCaffeine,
+    TextTheme textTheme,
+    BuildContext context,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -193,9 +182,7 @@ class TodayIntakeCard extends StatelessWidget {
             ),
             Text(
               'Total consumed',
-              style: textTheme.bodySmall?.copyWith(
-                color: AppColors.grey500,
-              ),
+              style: textTheme.bodySmall?.copyWith(color: AppColors.grey500),
             ),
           ],
         ),
@@ -211,9 +198,7 @@ class TodayIntakeCard extends StatelessWidget {
             ),
             Text(
               'Caffeine',
-              style: textTheme.bodySmall?.copyWith(
-                color: AppColors.grey500,
-              ),
+              style: textTheme.bodySmall?.copyWith(color: AppColors.grey500),
             ),
           ],
         ),

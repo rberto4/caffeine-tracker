@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_constants.dart';
 
@@ -97,7 +98,7 @@ class Beverage extends HiveObject {
     int suggestedColorIndex = colorIndex ?? _getSuggestedColorIndex(name);
     
     // Suggest image based on beverage type
-    int suggestedImageIndex = imageIndex ?? _getSuggestedImageIndex(name);
+    int suggestedImageIndex = imageIndex ?? LucideIcons.coffee.codePoint % BeverageAssets.allImages.length;
 
     return Beverage(
       id: id,
@@ -128,11 +129,6 @@ class Beverage extends HiveObject {
     }
   }
 
-  /// Get suggested image index based on beverage name
-  static int _getSuggestedImageIndex(String name) {
-    final suggestedImage = BeverageAssets.getSuggestedImageForType(name);
-    return BeverageAssets.allImages.indexOf(suggestedImage);
-  }
 
   @override
   String toString() {

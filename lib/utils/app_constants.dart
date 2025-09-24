@@ -76,38 +76,57 @@ class BeverageAssets {
   BeverageAssets._();
 
   // Available beverage images
-  static const String coffeeCup = 'assets/images/coffee-cup.png';
+  static const String coffeeCup1 = 'assets/images/coffee-cup-1.png';
   static const String coffeeCup2 = 'assets/images/coffee-cup-2.png';
   static const String coffeeCup3 = 'assets/images/coffee-cup-3.png';
   static const String coffeeCup4 = 'assets/images/coffee-cup-4.png';
-  static const String coffeeMug = 'assets/images/coffee-mug.png';
-  static const String teaCup = 'assets/images/tea-cup.png';
-  static const String energyDrink = 'assets/images/energy-drink.png';
+  static const String coffeeMug1 = 'assets/images/coffee-mug-1.png';
+  static const String teaCup1 = 'assets/images/tea-cup-1.png';
+  static const String teaPot1 = 'assets/images/tea-pot-1.png';
+  static const String energyDrink1 = 'assets/images/energy-drink-1.png';
   static const String energyDrink2 = 'assets/images/energy-drink-2.png';
   static const String energyDrink3 = 'assets/images/energy-drink-3.png';
-  static const String softDrink = 'assets/images/soft-drink.png';
-  static const String hotCocoa = 'assets/images/hot-cocoa.png';
-  static const String drink = 'assets/images/drink.png';
+  static const String energyDrink4 = 'assets/images/energy-drink-4.png';
+  static const String energyDrink5 = 'assets/images/energy-drink-5.png';
+  static const String energyDrink6 = 'assets/images/energy-drink-6.png';
+  static const String colaBottle1 = 'assets/images/cola-bottle-1.png';
+  static const String hotCocoa1 = 'assets/images/hot-cocoa-1.png';
+  static const String preWorkout1 = 'assets/images/pre-workout-1.png';
+  static const String preWorkout2 = 'assets/images/pre-workout-2.png';
 
   /// List of all available beverage images
   static const List<String> allImages = [
-    coffeeCup,
+    coffeeCup1,
     coffeeCup2,
     coffeeCup3,
     coffeeCup4,
-    coffeeMug,
-    teaCup,
-    energyDrink,
+    coffeeMug1,
+    teaCup1,
+    teaPot1,
+    energyDrink1,
     energyDrink2,
     energyDrink3,
-    softDrink,
-    hotCocoa,
-    drink,
+    energyDrink4,
+    energyDrink5,
+    energyDrink6,
+    colaBottle1,
+    hotCocoa1,
+    preWorkout1,
+    preWorkout2,
   ];
 
   /// Get beverage image by index
   static String getBeverageImage(int index) {
     return allImages[index % allImages.length];
+  }
+
+  /// Debug function to print all image paths
+  static void debugPrintAllImages() {
+    print('=== BEVERAGE ASSETS DEBUG ===');
+    for (int i = 0; i < allImages.length; i++) {
+      print('Index $i: ${allImages[i]}');
+    }
+    print('=== END DEBUG ===');
   }
 
   /// Get suggested image for beverage type
@@ -118,19 +137,25 @@ class BeverageAssets {
         name.contains('cappuccino') || name.contains('latte') ||
         name.contains('americano') || name.contains('macchiato') ||
         name.contains('mocha')) {
-      return coffeeCup;
+      return coffeeCup1;
+    } else if (name.contains('tea') && name.contains('pot')) {
+      return teaPot1;
     } else if (name.contains('tea')) {
-      return teaCup;
+      return teaCup1;
+    } else if (name.contains('pre-workout') || name.contains('preworkout') ||
+               name.contains('pre workout')) {
+      return preWorkout1;
     } else if (name.contains('energy') || name.contains('red bull') || 
                name.contains('monster')) {
-      return energyDrink;
+      return energyDrink1;
     } else if (name.contains('coca') || name.contains('pepsi') || 
                name.contains('cola')) {
-      return softDrink;
+      return colaBottle1;
     } else if (name.contains('cocoa') || name.contains('chocolate')) {
-      return hotCocoa;
+      return hotCocoa1;
     } else {
-      return drink;
+      return coffeeCup1;
     }
   }
+
 }

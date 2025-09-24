@@ -51,14 +51,20 @@ class AppColors {
   static const Color caffeineLevel4 = Color(0xFFF44336); // Very High (Red)
 
   // Beverage category colors (for drink identification)
-  static const Color beverageBlue = Color(0xFF2196F3);    // Blue
-  static const Color beverageGreen = Color(0xFF4CAF50);   // Green
-  static const Color beverageOrange = Color(0xFFFF9800);  // Orange
-  static const Color beveragePurple = Color(0xFF9C27B0);  // Purple
-  static const Color beverageRed = Color(0xFFF44336);     // Red
-  static const Color beverageTeal = Color(0xFF009688);    // Teal
-  static const Color beverageBrown = Color(0xFF795548);  // Brown
-
+  static const Color beverageBlack  = Color(0xFF000000);   // Black
+static const Color beverageBlue   = Color(0xFF2196F3);   // Blue
+static const Color beverageBrown  = Color(0xFF795548);   // Brown
+static const Color beverageCyan   = Color(0xFF00BCD4);   // Cyan
+static const Color beverageGray   = Color(0xFF9E9E9E);   // Gray
+static const Color beverageGreen  = Color(0xFF4CAF50);   // Green
+static const Color beverageIndigo = Color(0xFF3F51B5);   // Indigo
+static const Color beverageLime   = Color(0xFFCDDC39);   // Lime
+static const Color beverageOrange = Color(0xFFFF9800);   // Orange
+static const Color beveragePink   = Color(0xFFE91E63);   // Pink
+static const Color beveragePurple = Color(0xFF9C27B0);   // Purple
+static const Color beverageRed    = Color(0xFFF44336);   // Red
+static const Color beverageTeal   = Color(0xFF009688);   // Teal
+static const Color beverageYellow = Color(0xFFFFEB3B);   // Yellow
   /// List of available beverage colors
   static const List<Color> beverageColors = [
     beverageBlue,
@@ -68,6 +74,13 @@ class AppColors {
     beverageRed,
     beverageTeal,
     beverageBrown,
+    beverageBlack,
+    beverageGray,
+    beverageYellow,
+    beveragePink,
+    beverageCyan,
+    beverageLime,
+    beverageIndigo,
   ];
 
   /// Get beverage color by index

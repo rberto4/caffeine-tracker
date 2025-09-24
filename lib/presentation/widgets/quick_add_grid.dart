@@ -124,13 +124,13 @@ class _QuickAddGridState extends State<QuickAddGrid>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: CustomBoxShadow.cardBoxShadows,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           onTap: _isAnimationInProgress ? null : () => _onBeverageTap(beverage, index),
           child: Stack(
             children: [

@@ -1,6 +1,7 @@
 import 'package:caffeine_tracker/domain/providers/intake_provider.dart';
 import 'package:caffeine_tracker/domain/providers/user_provider.dart';
 import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
+import 'package:caffeine_tracker/presentation/widgets/custom_tile_title.dart';
 import 'package:caffeine_tracker/presentation/widgets/stats_cards.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -35,35 +36,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                    leading: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryOrange.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        LucideIcons.barChart2,
-                        color: AppColors.primaryOrange,
-                        size: 20,
-                      ),
-                    ),
-                    title: Text(
-                      "Statistiche",
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "Statistiche settimanali",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.6),
-                      ),
-                    ),
+                  CustomTileTitle(
+                    tittle: 'Statistiche',
+                    subtitle: 'Panoramica settimanale',
+                    leadingIcon: LucideIcons.barChart2,
+                    trailingWidget: SizedBox(),
                   ),
                   const SizedBox(height: 16),
                   _buildChart(chartData),

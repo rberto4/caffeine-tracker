@@ -26,7 +26,7 @@ class ModernIntakeListItem extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         //color: intake.beverage.color.withAlpha(20),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
       ),
 
       child: Padding(

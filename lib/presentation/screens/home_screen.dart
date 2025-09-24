@@ -1,4 +1,6 @@
 import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
+import 'package:caffeine_tracker/presentation/widgets/custom_standard_button.dart';
+import 'package:caffeine_tracker/presentation/widgets/custom_tile_title.dart';
 import 'package:caffeine_tracker/presentation/widgets/today_intake_card.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -8,6 +10,7 @@ import '../../domain/providers/intake_provider.dart';
 import '../../utils/app_colors.dart';
 import '../widgets/caffeine_gauge.dart';
 import '../widgets/quick_add_grid.dart';
+import 'other_intakes_screen.dart';
 
 /// Home screen showing caffeine gauge and quick actions
 class HomeScreen extends StatefulWidget {
@@ -125,15 +128,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Quick Add',
-          style: textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+        CustomTileTitle(
+          tittle: 'Assunzione rapida',
+          subtitle: 'Nuova assunzione in un tap',
+          leadingIcon: LucideIcons.plus,
+          trailingWidget: Icon(LucideIcons.settings, color: Theme.of(context).colorScheme.primary),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         QuickAddGrid(gaugeKey: _gaugeKey),
+        const SizedBox(height: 12),
+        
+        CustomStandardButton(
+          text: 'Scegli altre bevande',
+          icon: LucideIcons.plus,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          textColor: AppColors.onSurfaceDark,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const OtherIntakesScreen(),
+              ),
+            );
+          },
+        ),
+
       ],
     );
   }
