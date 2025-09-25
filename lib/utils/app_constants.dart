@@ -120,15 +120,6 @@ class BeverageAssets {
     return allImages[index % allImages.length];
   }
 
-  /// Debug function to print all image paths
-  static void debugPrintAllImages() {
-    print('=== BEVERAGE ASSETS DEBUG ===');
-    for (int i = 0; i < allImages.length; i++) {
-      print('Index $i: ${allImages[i]}');
-    }
-    print('=== END DEBUG ===');
-  }
-
   /// Get suggested image for beverage type
   static String getSuggestedImageForType(String beverageName) {
     final name = beverageName.toLowerCase();

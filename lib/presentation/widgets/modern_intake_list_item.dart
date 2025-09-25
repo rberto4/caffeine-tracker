@@ -65,7 +65,7 @@ class ModernIntakeListItem extends StatelessWidget {
                   Text(
                     intake.beverage.name,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold, color: AppColors.white
                         ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -84,9 +84,7 @@ class ModernIntakeListItem extends StatelessWidget {
                         '${intake.beverage.caffeineAmount.toInt()}mg',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 1),
+                          color: AppColors.white,
                         ),
                       ),
                                       
@@ -104,9 +102,7 @@ class ModernIntakeListItem extends StatelessWidget {
                         '${intake.beverage.volume.toInt()}ml',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha:1),
+                          color: AppColors.white,
                         ),
                       ),
                     ],
@@ -129,9 +125,7 @@ class ModernIntakeListItem extends StatelessWidget {
                             : '${intake.formattedDate} at ${intake.formattedTime}',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha : 1),
+                          color: AppColors.white,
                         ),
                       ),
                     ],
@@ -146,9 +140,7 @@ class ModernIntakeListItem extends StatelessWidget {
                 child: Icon(
                   LucideIcons.trash2,
                   size: 18,
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.5),
+                  color: AppColors.white
                 ),
               ),
           ],

@@ -11,6 +11,7 @@ import '../../utils/app_constants.dart';
 import '../widgets/custom_standard_button.dart';
 import '../widgets/custom_tile_title.dart';
 import '../widgets/box_shadow.dart';
+import '../widgets/modern_intake_list_item.dart';
 
 /// Screen for adding custom beverage intakes
 class OtherIntakesScreen extends StatefulWidget {
@@ -33,8 +34,6 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
   @override
   void initState() {
     super.initState();
-    // Debug: stampa tutti i path delle immagini
-    BeverageAssets.debugPrintAllImages();
   }
 
   @override
@@ -62,8 +61,6 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildHeader(),
-                const SizedBox(height: 24),
                 _buildBeveragePreview(),
                 const SizedBox(height: 24),
                 _buildNameField(),
@@ -126,133 +123,37 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
   }
 
   Widget _buildBeveragePreview() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: CustomBoxShadow.cardBoxShadows,
-      ),
-      child: Column(
-        children: [
-          CustomTileTitle(
-            tittle: 'Anteprima',
-            subtitle: 'Come apparirà la tua bevanda',
-            leadingIcon: LucideIcons.eye,
-          ),
-          const SizedBox(height: 16),
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.getBeverageColor(_selectedColorIndex),
-                  AppColors.getBeverageColor(
-                    _selectedColorIndex,
-                  ).withValues(alpha: 0.8),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: CustomBoxShadow.cardBoxShadows,
-            ),
-            child: Stack(
-              children: [
-                // Background watermark
-                Positioned(
-                  top: -20,
-                  right: -10,
-                  child: Transform.rotate(
-                    angle: 0.3,
-                    child: Image.asset(
-                      BeverageAssets.getBeverageImage(_selectedImageIndex),
-                      width: 80,
-                      height: 80,
-                      opacity: const AlwaysStoppedAnimation(0.2),
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        print('Errore anteprima background: ${BeverageAssets.getBeverageImage(_selectedImageIndex)}: $error');
-                        return Icon(
-                          LucideIcons.coffee,
-                          color: Colors.white.withValues(alpha: 0.2),
-                          size: 40,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                // Main image
-                Center(
-                  child: Image.asset(
-                    BeverageAssets.getBeverageImage(_selectedImageIndex),
-                    width: 48,
-                    height: 48,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      print('Errore anteprima main: ${BeverageAssets.getBeverageImage(_selectedImageIndex)}: $error');
-                      return const Icon(
-                        LucideIcons.coffee,
-                        color: Colors.white,
-                        size: 32,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            _nameController.text.isEmpty
-                ? 'Nome bevanda'
-                : _nameController.text,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.getBeverageColor(
-                    _selectedColorIndex,
-                  ).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '${_volumeController.text.isEmpty ? '0' : _volumeController.text}ml',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.getBeverageColor(
-                    _selectedColorIndex,
-                  ).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '${_caffeineController.text.isEmpty ? '0' : _caffeineController.text}mg',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    // Crea una bevanda temporanea per l'anteprima
+    final previewBeverage = Beverage(
+      id: 'preview',
+      name: _nameController.text.isEmpty ? 'Nome bevanda' : _nameController.text,
+      volume: _volumeController.text.isEmpty ? 0 : double.tryParse(_volumeController.text) ?? 0,
+      caffeineAmount: _caffeineController.text.isEmpty ? 0 : double.tryParse(_caffeineController.text) ?? 0,
+      colorIndex: _selectedColorIndex,
+      imageIndex: _selectedImageIndex,
+    );
+
+    // Crea un intake temporaneo per l'anteprima
+    final previewIntake = Intake(
+      id: 'preview',
+      beverage: previewBeverage,
+      timestamp: DateTime.now(),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTileTitle(
+          tittle: 'Anteprima',
+          subtitle: 'Come apparirà la tua bevanda',
+          leadingIcon: LucideIcons.eye,
+        ),
+        const SizedBox(height: 16),
+        ModernIntakeListItem(
+          intake: previewIntake,
+          onDelete: null, // Non mostrare il pulsante di cancellazione nell'anteprima
+        ),
+      ],
     );
   }
 
