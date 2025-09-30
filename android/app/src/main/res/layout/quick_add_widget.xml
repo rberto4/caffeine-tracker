@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quick Add"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Quick Add Grid -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <!-- Beverage 1 -->
+        <LinearLayout
+            android:id="@+id/beverage_button_0"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:background="#FF6B35"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/beverage_name_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Caffè"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/beverage_caffeine_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="95mg"
+                android:textSize="8sp"
+                android:textColor="#FFFFFF"
+                android:alpha="0.8" />
+
+        </LinearLayout>
+
+        <!-- Beverage 2 -->
+        <LinearLayout
+            android:id="@+id/beverage_button_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:background="#4CAF50"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/beverage_name_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tè"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/beverage_caffeine_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="40mg"
+                android:textSize="8sp"
+                android:textColor="#FFFFFF"
+                android:alpha="0.8" />
+
+        </LinearLayout>
+
+        <!-- Beverage 3 -->
+        <LinearLayout
+            android:id="@+id/beverage_button_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:background="#2196F3"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/beverage_name_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Energy"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/beverage_caffeine_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="80mg"
+                android:textSize="8sp"
+                android:textColor="#FFFFFF"
+                android:alpha="0.8" />
+
+        </LinearLayout>
+
+        <!-- Beverage 4 -->
+        <LinearLayout
+            android:id="@+id/beverage_button_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:background="#9C27B0"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/beverage_name_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cola"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/beverage_caffeine_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="34mg"
+                android:textSize="8sp"
+                android:textColor="#FFFFFF"
+                android:alpha="0.8" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

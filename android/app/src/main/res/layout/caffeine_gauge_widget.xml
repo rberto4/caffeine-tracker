@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/greeting_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buongiorno ☕️"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Caffeine Display -->
+    <LinearLayout
+        android:id="@+id/gauge_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#F5F5F5"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/current_caffeine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0mg"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#FF6B35" />
+
+        <TextView
+            android:id="@+id/max_caffeine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/ 400mg"
+            android:textSize="14sp"
+            android:textColor="#666666" />
+
+    </LinearLayout>
+
+    <!-- Bottom Info -->
+    <TextView
+        android:id="@+id/intake_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 assunzioni oggi"
+        android:textSize="12sp"
+        android:textColor="#666666"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

@@ -82,46 +82,7 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
       ),
     );
   }
-
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: CustomBoxShadow.cardBoxShadows,
-      ),
-      child: Column(
-        children: [
-          Icon(LucideIcons.plus, size: 48, color: Colors.white),
-          const SizedBox(height: 12),
-          Text(
-            'Crea la tua bevanda',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Personalizza nome, volume, caffeina, icona e colore',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.9),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
+  
   Widget _buildBeveragePreview() {
     // Crea una bevanda temporanea per l'anteprima
     final previewBeverage = Beverage(
@@ -286,7 +247,8 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: CustomBoxShadow.cardBoxShadows,
           ),
           child: GridView.builder(
             shrinkWrap: true,
@@ -322,7 +284,7 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
                           : Colors.grey.withValues(alpha: 0.3),
                       width: isSelected ? 2 : 1,
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(24),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8),
@@ -331,7 +293,6 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
                         // Debug: stampa l'errore per capire quale immagine non carica
-                        print('Errore caricamento immagine ${BeverageAssets.getBeverageImage(index)}: $error');
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -374,6 +335,7 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(24),
+            boxShadow: CustomBoxShadow.cardBoxShadows
           ),
           child: GridView.builder(
             shrinkWrap: true,

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Caffeine Tracker</string>
+    <string name="caffeine_gauge_widget_description">Shows your daily caffeine intake progress</string>
+    <string name="quick_add_widget_description">Quick add your favorite beverages</string>
+    <string name="caffeine_text">Caffeine</string>
+    <string name="intakes_text">Intakes</string>
+    <string name="good_morning">Good morning</string>
+    <string name="good_afternoon">Good afternoon</string>
+    <string name="good_evening">Good evening</string>
+</resources>

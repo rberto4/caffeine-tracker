@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/beverage.dart';
 import '../../utils/default_beverage_service.dart';
+import '../../utils/home_widget_service.dart';
 
 /// Provider for managing beverages
 class BeverageProvider extends ChangeNotifier {
@@ -49,6 +50,9 @@ class BeverageProvider extends ChangeNotifier {
   Future<void> _loadDefaultBeverages() async {
     _defaultBeverages = await DefaultBeverageService.getDefaultBeverages();
     notifyListeners();
+    
+    // Update quick add widget with default beverages
+    await _updateQuickAddWidget();
   }
 
   /// Add a new beverage
@@ -121,6 +125,19 @@ class BeverageProvider extends ChangeNotifier {
     await DefaultBeverageService.resetDefaultBeverages();
     await _loadDefaultBeverages();
     await _loadBeverages();
+  }
+
+  /// Update quick add widget with current default beverages
+  Future<void> _updateQuickAddWidget() async {
+    try {
+      if (_defaultBeverages.isNotEmpty) {
+        // Take first 4 default beverages for the widget
+        final widgetBeverages = _defaultBeverages.take(4).toList();
+        await HomeWidgetService.updateQuickAddWidget(defaultBeverages: widgetBeverages);
+      }
+    } catch (e) {
+      debugPrint('Error updating quick add widget: $e');
+    }
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/intake.dart';
+import '../../utils/home_widget_service.dart';
 
 /// Statistics for caffeine intake
 class IntakeStatistics {
@@ -79,6 +80,9 @@ class IntakeProvider extends ChangeNotifier {
     _intakes.add(intake);
     _intakes.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     notifyListeners();
+    
+    // Update widgets
+    await _updateWidgets();
   }
 
   /// Update an existing intake
@@ -94,6 +98,9 @@ class IntakeProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+    
+    // Update widgets
+    await _updateWidgets();
   }
 
   /// Delete an intake
@@ -103,6 +110,9 @@ class IntakeProvider extends ChangeNotifier {
     await _box!.delete(id);
     _intakes.removeWhere((i) => i.id == id);
     notifyListeners();
+    
+    // Update widgets
+    await _updateWidgets();
   }
 
   /// Get intakes for a specific date
@@ -220,6 +230,24 @@ class IntakeProvider extends ChangeNotifier {
     }
 
     return data;
+  }
+
+  /// Update home screen widgets with current data
+  Future<void> _updateWidgets() async {
+    try {
+      // Update caffeine gauge widget
+      await HomeWidgetService.updateCaffeineGaugeWidget(
+        currentCaffeine: todayTotalCaffeine,
+        maxCaffeine: 400.0, // Default safe limit, could be made configurable
+        totalIntakes: todayIntakes.length,
+      );
+      
+      // Get default beverages for quick add widget
+      // Note: We need access to BeverageProvider here, which could be passed or obtained via Provider.of
+      // For now, we'll update the gauge widget only
+    } catch (e) {
+      debugPrint('Error updating widgets: $e');
+    }
   }
 
   @override
