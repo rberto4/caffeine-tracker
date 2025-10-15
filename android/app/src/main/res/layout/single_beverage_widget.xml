@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF6B35"
+    android:padding="16dp"
+    android:clickable="true">
+
+    <!-- Background icon watermark -->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="end|top"
+        android:src="@drawable/ic_coffee_watermark"
+        android:alpha="0.2"
+        android:rotation="15"
+        android:scaleType="centerCrop" />
+
+    <!-- Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <!-- Icon placeholder (puoi sostituire con un'immagine vera) -->
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="☕"
+            android:textSize="32sp"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Beverage name -->
+        <TextView
+            android:id="@+id/beverage_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Caffè"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:gravity="start"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Caffeine amount -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#40FFFFFF"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/beverage_caffeine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="95mg"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+        <!-- Volume -->
+        <TextView
+            android:id="@+id/beverage_volume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="250ml"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            android:alpha="0.8" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Add button hint -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="#40FFFFFF"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tocca per aggiungere"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

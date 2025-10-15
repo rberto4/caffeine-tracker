@@ -23,7 +23,6 @@ class BeverageProvider extends ChangeNotifier {
 
     try {
       _box = await Hive.openBox<Beverage>(_beveragesBoxName);
-      
       // Initialize default beverages if first time
       await DefaultBeverageService.initializeDefaultBeverages();
       

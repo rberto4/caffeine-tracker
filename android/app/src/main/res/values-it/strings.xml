@@ -3,6 +3,8 @@
     <string name="app_name">Caffeine Tracker</string>
     <string name="caffeine_gauge_widget_description">Mostra il tuo progresso quotidiano di caffeina</string>
     <string name="quick_add_widget_description">Aggiungi rapidamente le tue bevande preferite</string>
+    <string name="single_beverage_widget_description">Aggiungi rapidamente una singola bevanda</string>
+    <string name="quick_add_grid_widget_description">Griglia rapida con tutte e 4 le bevande</string>
     <string name="caffeine_text">Caffeina</string>
     <string name="intakes_text">Assunzioni</string>
     <string name="good_morning">Buongiorno</string>

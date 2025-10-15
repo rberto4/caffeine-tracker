@@ -1,3 +1,4 @@
+import 'package:caffeine_tracker/presentation/screens/other_intakes_screen.dart';
 import 'package:caffeine_tracker/presentation/widgets/box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,10 +15,7 @@ import '../../utils/animation_overlay_service.dart';
 class QuickAddGrid extends StatefulWidget {
   final GlobalKey? gaugeKey;
 
-  const QuickAddGrid({
-    super.key,
-    this.gaugeKey,
-  });
+  const QuickAddGrid({super.key, this.gaugeKey});
 
   @override
   State<QuickAddGrid> createState() => _QuickAddGridState();
@@ -33,9 +31,9 @@ class _QuickAddGridState extends State<QuickAddGrid>
   @override
   void initState() {
     super.initState();
-    
+
     const quickProductsCount = 4; // Number of default beverages
-    
+
     // Initialize animation controllers
     _animationControllers = List.generate(
       quickProductsCount,
@@ -50,10 +48,7 @@ class _QuickAddGridState extends State<QuickAddGrid>
       return Tween<double>(
         begin: 1.0,
         end: 0.95,
-      ).animate(CurvedAnimation(
-        parent: controller,
-        curve: Curves.easeInOut,
-      ));
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     }).toList();
 
     // Initialize button keys for animation targets
@@ -77,11 +72,9 @@ class _QuickAddGridState extends State<QuickAddGrid>
         }
 
         final defaultBeverages = beverageProvider.defaultBeverages;
-        
+
         if (defaultBeverages.isEmpty) {
-          return const Center(
-            child: Text('Nessuna bevanda disponibile'),
-          );
+          return const Center(child: Text('Nessuna bevanda disponibile'));
         }
 
         return GridView.builder(
@@ -96,7 +89,7 @@ class _QuickAddGridState extends State<QuickAddGrid>
           itemCount: defaultBeverages.length > 4 ? 4 : defaultBeverages.length,
           itemBuilder: (context, index) {
             final beverage = defaultBeverages[index];
-            
+
             return AnimatedBuilder(
               animation: _scaleAnimations[index],
               builder: (context, child) {
@@ -117,10 +110,7 @@ class _QuickAddGridState extends State<QuickAddGrid>
       key: _buttonKeys[index],
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            beverage.color,
-            beverage.color.withValues(alpha: 0.8),
-          ],
+          colors: [beverage.color, beverage.color.withValues(alpha: 0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -131,7 +121,10 @@ class _QuickAddGridState extends State<QuickAddGrid>
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(24),
-          onTap: _isAnimationInProgress ? null : () => _onBeverageTap(beverage, index),
+          onTap: _isAnimationInProgress
+              ? null
+              : () => _onBeverageTap(beverage, index),
+          onLongPress: () => _onBeverageLongPress(beverage),
           child: Stack(
             children: [
               // Background watermark icon - large and rotated
@@ -148,13 +141,13 @@ class _QuickAddGridState extends State<QuickAddGrid>
                     opacity: const AlwaysStoppedAnimation(0.2),
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
-                            // Fallback to icon if image fails to load
-                            return Icon(
-                              _getIconForBeverage(beverage.name),
-                              color: Colors.white,
-                            );
-                          },
-                        ),
+                      // Fallback to icon if image fails to load
+                      return Icon(
+                        _getIconForBeverage(beverage.name),
+                        color: Colors.white,
+                      );
+                    },
+                  ),
                 ),
               ),
               // Content
@@ -240,7 +233,7 @@ class _QuickAddGridState extends State<QuickAddGrid>
 
   IconData _getIconForBeverage(String name) {
     final lowerName = name.toLowerCase();
-    
+
     if (lowerName.contains('espresso') || lowerName.contains('coffee')) {
       return LucideIcons.coffee;
     } else if (lowerName.contains('tea') || lowerName.contains('tè')) {
@@ -268,7 +261,7 @@ class _QuickAddGridState extends State<QuickAddGrid>
     // Add haptic feedback
     HapticFeedback.mediumImpact();
 
-        // Start drink to gauge animation if gauge key is available
+    // Start drink to gauge animation if gauge key is available
     if (widget.gaugeKey != null && widget.gaugeKey!.currentContext != null) {
       AnimationOverlayService.startDrinkToGaugeAnimation(
         context: context,
@@ -294,8 +287,11 @@ class _QuickAddGridState extends State<QuickAddGrid>
 
   Future<void> _addIntake(Beverage beverage) async {
     try {
-      final intakeProvider = Provider.of<IntakeProvider>(context, listen: false);
-      
+      final intakeProvider = Provider.of<IntakeProvider>(
+        context,
+        listen: false,
+      );
+
       final intake = Intake(
         id: 'intake_${DateTime.now().millisecondsSinceEpoch}',
         beverage: beverage,
@@ -324,5 +320,15 @@ class _QuickAddGridState extends State<QuickAddGrid>
         );
       }
     }
+  }
+
+  void _onBeverageLongPress(Beverage beverage) {
+    // Handle long press (e.g., show options to edit or remove)
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OtherIntakesScreen(modifybeverage: beverage),
+      ),
+    );
   }
 }

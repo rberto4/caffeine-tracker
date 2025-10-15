@@ -15,7 +15,9 @@ import '../widgets/modern_intake_list_item.dart';
 
 /// Screen for adding custom beverage intakes
 class OtherIntakesScreen extends StatefulWidget {
-  const OtherIntakesScreen({super.key});
+  Beverage? modifybeverage;
+
+  OtherIntakesScreen({super.key, this.modifybeverage});
 
   @override
   State<OtherIntakesScreen> createState() => _OtherIntakesScreenState();
@@ -34,6 +36,14 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.modifybeverage != null) {
+      _nameController.text = widget.modifybeverage!.name;
+      _volumeController.text = widget.modifybeverage!.volume.toString();
+      _caffeineController.text = widget.modifybeverage!.caffeineAmount
+          .toString();
+      _selectedColorIndex = widget.modifybeverage!.colorIndex;
+      _selectedImageIndex = widget.modifybeverage!.imageIndex;
+    }
   }
 
   @override
@@ -49,7 +59,6 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        title: const Text('Aggiungi Bevanda Personalizzata'),
         backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
       ),
@@ -61,7 +70,7 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildBeveragePreview(),
+                _buildBeveragePreview(widget.modifybeverage),
                 const SizedBox(height: 24),
                 _buildNameField(),
                 const SizedBox(height: 16),
@@ -73,7 +82,7 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
                 const SizedBox(height: 24),
                 _buildColorSelector(),
                 const SizedBox(height: 32),
-                _buildActionButtons(),
+                _buildActionButtons(widget.modifybeverage),
                 const SizedBox(height: 16),
               ],
             ),
@@ -82,14 +91,20 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
       ),
     );
   }
-  
-  Widget _buildBeveragePreview() {
-    // Crea una bevanda temporanea per l'anteprima
+
+  Widget _buildBeveragePreview(Beverage? modifybeverage) {
+    // Crea una bevanda temporanea per l'anteprima con i valori correnti
     final previewBeverage = Beverage(
-      id: 'preview',
-      name: _nameController.text.isEmpty ? 'Nome bevanda' : _nameController.text,
-      volume: _volumeController.text.isEmpty ? 0 : double.tryParse(_volumeController.text) ?? 0,
-      caffeineAmount: _caffeineController.text.isEmpty ? 0 : double.tryParse(_caffeineController.text) ?? 0,
+      id: modifybeverage?.id ?? 'preview',
+      name: _nameController.text.isEmpty
+          ? 'Nome bevanda'
+          : _nameController.text,
+      volume: _volumeController.text.isEmpty
+          ? 0
+          : double.tryParse(_volumeController.text) ?? 0,
+      caffeineAmount: _caffeineController.text.isEmpty
+          ? 0
+          : double.tryParse(_caffeineController.text) ?? 0,
       colorIndex: _selectedColorIndex,
       imageIndex: _selectedImageIndex,
     );
@@ -112,7 +127,8 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
         const SizedBox(height: 16),
         ModernIntakeListItem(
           intake: previewIntake,
-          onDelete: null, // Non mostrare il pulsante di cancellazione nell'anteprima
+          onDelete:
+              null, // Non mostrare il pulsante di cancellazione nell'anteprima
         ),
       ],
     );
@@ -335,7 +351,7 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(24),
-            boxShadow: CustomBoxShadow.cardBoxShadows
+            boxShadow: CustomBoxShadow.cardBoxShadows,
           ),
           child: GridView.builder(
             shrinkWrap: true,
@@ -388,16 +404,20 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(Beverage? modifybeverage) {
     return Column(
       children: [
-        CustomStandardButton(
-          text: _isLoading
-              ? 'Creazione in corso...'
-              : 'Crea e Aggiungi Assunzione',
-          icon: _isLoading ? null : LucideIcons.plus,
-          onPressed: _isLoading ? null : _createAndAddIntake,
-        ),
+        modifybeverage == null
+            ? CustomStandardButton(
+                text: _isLoading
+                    ? 'Creazione in corso...'
+                    : 'Crea e Aggiungi Assunzione',
+                icon: _isLoading ? null : LucideIcons.plus,
+                onPressed: _isLoading
+                    ? null
+                    : () => _createAndAddIntake(modifybeverage),
+              )
+            : Container(),
         const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
@@ -428,7 +448,7 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
     );
   }
 
-  Future<void> _createAndAddIntake() async {
+  Future<void> _createAndAddIntake(Beverage? modifybeverage) async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -436,7 +456,7 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
     });
 
     try {
-      final beverage = _createBeverage();
+      final beverage = _createBeverage(widget.modifybeverage);
 
       // Add beverage to provider
       final beverageProvider = Provider.of<BeverageProvider>(
@@ -493,15 +513,15 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
     });
 
     try {
-      final beverage = _createBeverage();
-
+      final beverage = _createBeverage(widget.modifybeverage);
       // Add beverage to provider
       final beverageProvider = Provider.of<BeverageProvider>(
         context,
         listen: false,
       );
-      await beverageProvider.addBeverage(beverage);
-
+      widget.modifybeverage != null
+          ? await beverageProvider.updateBeverage(beverage)
+          : await beverageProvider.addBeverage(beverage);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -529,9 +549,11 @@ class _OtherIntakesScreenState extends State<OtherIntakesScreen> {
     }
   }
 
-  Beverage _createBeverage() {
+  Beverage _createBeverage(Beverage? modifybeverage) {
     return Beverage(
-      id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
+      id:
+          modifybeverage?.id ??
+          'custom_${DateTime.now().millisecondsSinceEpoch}',
       name: _nameController.text.trim(),
       volume: double.parse(_volumeController.text),
       caffeineAmount: double.parse(_caffeineController.text),

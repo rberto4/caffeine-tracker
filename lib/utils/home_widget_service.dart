@@ -9,6 +9,8 @@ import '../domain/models/intake.dart';
 class HomeWidgetService {
   static const String _caffeineGaugeWidgetName = 'CaffeineGaugeWidgetProvider';
   static const String _quickAddWidgetName = 'QuickAddWidgetProvider';
+  static const String _singleBeverageWidgetName = 'SingleBeverageWidgetProvider';
+  static const String _quickAddGridWidgetName = 'QuickAddGridWidgetProvider';
 
   /// Initialize the home widget service
   static Future<void> initialize() async {
@@ -65,13 +67,44 @@ class HomeWidgetService {
       
       await HomeWidget.saveWidgetData<String>('widget_last_updated', DateTime.now().toIso8601String());
       
+      // Update all widget types
       await HomeWidget.updateWidget(
         name: _quickAddWidgetName,
         androidName: _quickAddWidgetName,
         iOSName: _quickAddWidgetName,
       );
+      
+      await HomeWidget.updateWidget(
+        name: _singleBeverageWidgetName,
+        androidName: _singleBeverageWidgetName,
+        iOSName: _singleBeverageWidgetName,
+      );
+      
+      await HomeWidget.updateWidget(
+        name: _quickAddGridWidgetName,
+        androidName: _quickAddGridWidgetName,
+        iOSName: _quickAddGridWidgetName,
+      );
     } catch (e) {
       debugPrint('Error updating quick add widget: $e');
+    }
+  }
+
+  /// Update a specific single beverage widget with a beverage index
+  static Future<void> updateSingleBeverageWidget({
+    required int widgetId,
+    required int beverageIndex,
+  }) async {
+    try {
+      await HomeWidget.saveWidgetData<int>('widget_${widgetId}_beverage_index', beverageIndex);
+      
+      await HomeWidget.updateWidget(
+        name: _singleBeverageWidgetName,
+        androidName: _singleBeverageWidgetName,
+        iOSName: _singleBeverageWidgetName,
+      );
+    } catch (e) {
+      debugPrint('Error updating single beverage widget: $e');
     }
   }
 
